@@ -1,2 +1,2 @@
 # hello-world
-Various tests
+Divers tests : Java, Web (HTML/JS/CSS)
