@@ -387,7 +387,7 @@ var BasketController = function() {
 var MyApp = {
 	currency: Util.choice(['$', '€', '£']), // monnaie
 	maxValue: 20, // valeur max.
-	nbSec: 1.5,
+	nbSec: 0.5, // secondes
 	init : function() {
 
 		var listObj = [];
