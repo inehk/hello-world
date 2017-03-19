@@ -32,15 +32,10 @@
 .forEach() => devrait marcher depuis IE9+ ... mais pas sur un "NodeList"
 
 
-
 */
 
 
-/*
 
-=> TODO ajouter des objets à un panier ...
-
-*/
 
 
 // 
@@ -229,6 +224,15 @@ var BasketView = function(objModel, objController, id) {
 	this.test = Object.create(View);
 	this.test.objModel = objModel;
 
+
+	// @TODO: simplifier ça ?
+	var me = this;
+	me.valuesHistory = [];
+	me.getHistory = function() {
+		return me.valuesHistory;
+	};
+
+
 	// Utilisation du template ...
 	var base = document.getElementById("basketViewTemplate");
 
@@ -238,10 +242,37 @@ var BasketView = function(objModel, objController, id) {
 	var render = function() {
 		var content = Util.stringToDOM(base.innerHTML);
 		var somme = 0;
+		var cnt = objModel.length;
 		objModel.forEach(function(obj) {
 			somme += obj.getPrice();
 		});
+
+		var valuesHistory = me.getHistory();
+		if(valuesHistory.length > 100) {	valuesHistory.shift();	}
+		valuesHistory.push(somme);
+
 		content.querySelector("#nbBasketElem").innerHTML = somme + " " + MyApp.currency;
+
+		var svg = document.createElement('svg');
+		svg.setAttribute("width", 100);
+		svg.setAttribute("height", cnt*MyApp.maxValue/2);
+		var path = document.createElement('path');
+		var d = "M";
+		for(var i = 0; i < valuesHistory.length; i++) {
+			if(i) {
+				d += "L";
+			}
+			d += " " + i + "," + ((cnt*MyApp.maxValue) - valuesHistory[i])/2 + " ";
+		}
+		//d += " Z"; //L" + i + ",0 Z";
+		path.setAttribute("d", d);
+		path.setAttribute("fill", "transparent");
+		path.setAttribute("stroke", "blue");
+		svg.appendChild(path);
+
+		content.querySelector("#graph").innerHTML = ""; // on efface tout ...
+		content.querySelector("#graph").appendChild(svg);
+
 		el.innerHTML = content.innerHTML;
 	}
 

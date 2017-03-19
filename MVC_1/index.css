@@ -49,13 +49,20 @@ body {
 .basketView {
 	position: relative;
 	top: 0;
-	left: 150px;
+	left: 120px;
 	width: 150px;
+	height: 200px;
 	margin: 10px;
 	cursor: pointer;
 	text-decoration: underline;
 	font-weight: bold;
 	font-size: 16pt;
+}
+
+.basketView svg {
+	margin-top: 5px;
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
 }
 
 .basketView:hover::before {
