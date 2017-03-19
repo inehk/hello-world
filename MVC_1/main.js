@@ -378,7 +378,7 @@ var BasketController = function() {
 // le "main"
 // 
 var MyApp = {
-	currency: '$', // monnaie
+	currency: Util.choice(['$', '€', '£']), // monnaie
 	maxValue: 20, // valeur max.
 	init : function() {
 
