@@ -197,10 +197,11 @@ var ListView = function(objModel, objController, id) {
 		}
 	}
 
-	var color = function(idx, colorName) {
+	var color = function(idx, colorName, animate) {
 		var elem = el.querySelector("li:nth-child("+(idx+1)+")");
 		elem.style.backgroundColor = colorName || 'red';
-		elem.className = "myAnimation"; // quelques secondes ...
+		// animation de quelques secondes
+		if(animate)	elem.className = "myAnimation";
 	}
 
 	return {
@@ -270,12 +271,18 @@ var ListController = function() {
 	return {
 		handleMyEvent: function(eventName, model, view, value, value2) {
 			switch(eventName) {
-				case "clickedItem": // quand on click ça augmente le prix de +1
-					var result = model.setPrice( Math.round( (model.getPrice()+1) * MyApp.maxValue ) / MyApp.maxValue );
-					if(!result) {
+				case "clickedItem": // quand on click sur un objet ça augmente son prix de +1
+
+					// @XXX: pour corrigé le pb de précision ?! si prix en "float"
+					var val = Math.round( (model.getPrice()+1) * MyApp.maxValue ) / MyApp.maxValue;
+					
+					var result = model.setPrice( val );
+
+					if(!result) { // si prix non-valide
 						view.warning(value); // value = l'index de la position du <li>
 					}
 					break;
+
 				case "changeItem":
 					var result = model.setPriceDelta(value2);
 					console.log(result);
@@ -283,21 +290,28 @@ var ListController = function() {
 						view.warning(value); // value = l'index de la position du <li>
 					}else{
 						if(value2 > 0) {
-							view.changeColor(value, 'green');
+							view.changeColor(value, 'green', 1); // gain
 						}else{
-							view.changeColor(value, 'red');
+							view.changeColor(value, 'red', 1); // perte
 						}
 					}
 					break;
+
 				default:
-					//
+					// action inconnue ...
 			}
 		}
 	}
 }
 
+// 
 // Logique Panier
+// 
 var BasketController = function() {
+
+	//
+	// private functions ...
+	//
 
 	var empty = function(objModel) {
 		if(objModel instanceof Array) {
@@ -309,6 +323,7 @@ var BasketController = function() {
 		}
 	}
 
+	// public
 	return {
 		handleMyEvent: function(eventName, model) {
 			if(eventName=="clickedBasket") { // quand on click on remet tous les prix à 0
@@ -319,46 +334,55 @@ var BasketController = function() {
 }
 
 
-// "main"
+
+
+
+// 
+// le "main"
+// 
 var MyApp = {
 	currency: '$', // monnaie
 	maxValue: 20, // valeur max.
 	init : function() {
 
-		//
-		// Initialisation du pattern "MVC"
-		//
 		var listObj = [];
-		var MIN = 3;
-		var MAX = 10;
+		var MIN = 5, MAX = 15;
+
+
 		var maxElements = Math.ceil(Math.random() * (MAX - MIN)) + MIN;
 		for(var i = 1; i <= maxElements; i++) {
 			listObj.push(new ObjModel({name: 'Objet ' + i, price: Math.ceil(Math.random() * MyApp.maxValue)}));
 		}
 		
+		//
+		// Initialisation du pattern "MVC"
+		//
 		var listController1 = new ListController();
 		var listView1 = new ListView(listObj, listController1);
 
 		var basketController1 = new BasketController();
 		var basketView1 = new BasketView(listObj, basketController1);
 
-		//
-		//
-		//
+
+
+
 		var listObj = [];
 		var abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		var MIN = 3;
-		var MAX = 10;
 		var maxElements = Math.ceil(Math.random() * (MAX - MIN)) + MIN;
 		for(var i = 1; i <= maxElements; i++) {
 			listObj.push(new ObjModel({name: 'Objet ' + abc.split('')[Math.ceil(Math.random() * 26)-1], price: Math.ceil(Math.random() * MyApp.maxValue)}));
 		}
 		
+		//
+		// Initialisation du pattern "MVC"
+		//
 		var listController_2 = new ListController();
 		var listView_2 = new ListView(listObj, listController_2, "listView_2");
 
 		var basketController_2 = new BasketController();
 		var basketView_2 = new BasketView(listObj, basketController_2, "basketView_2");
+
+
 
 		// On modifie les valeurs de +1 ou -1 toutes les X secondes
 		var nbSec = 0.8;
@@ -386,7 +410,7 @@ var MyApp = {
 			// action !
 			c.handleMyEvent("changeItem", m, v, idx, delta);
 
-		}, nbSec * 1000);
+		}, nbSec * 1000 /*ms*/);
 
 	}
 };
