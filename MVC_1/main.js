@@ -203,7 +203,14 @@ var ListView = function(objModel, objController, id) {
 		var elem = el.querySelector("li:nth-child("+(idx+1)+")");
 		elem.style.backgroundColor = colorName || 'red';
 		// animation de quelques secondes
-		if(animate)	elem.className = "myAnimation";
+		if(animate) {
+			elem.className = "myAnimation";
+			// @??? Indispensable ??
+			setTimeout(function() {
+				elem.className = '';
+				elem.style.backgroundColor = '';
+			}, MyApp.nbSec * 1000);
+		}
 	}
 
 	return {
@@ -380,6 +387,7 @@ var BasketController = function() {
 var MyApp = {
 	currency: Util.choice(['$', '€', '£']), // monnaie
 	maxValue: 20, // valeur max.
+	nbSec: 1.5,
 	init : function() {
 
 		var listObj = [];
@@ -422,7 +430,6 @@ var MyApp = {
 
 
 		// On modifie les valeurs de +1 ou -1 toutes les X secondes
-		var nbSec = 0.8;
 		setInterval(function() {
 			
 			var v, models;
@@ -447,7 +454,7 @@ var MyApp = {
 			// action !
 			c.handleMyEvent("changeItem", m, v, idx, delta);
 
-		}, nbSec * 1000 /*ms*/);
+		}, MyApp.nbSec * 1000 /*ms*/);
 
 	}
 };

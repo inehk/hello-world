@@ -71,7 +71,8 @@ body {
 }
 
 .myAnimation {
-	animation: monAnimation 2s;
+	animation: 			monAnimation 2s; /* IE10+ */
+	-webkit-animation: 	monAnimation 2s;
 }
 
 @keyframes monAnimation {
