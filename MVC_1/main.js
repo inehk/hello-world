@@ -28,6 +28,11 @@
 				> Couche intermédiaire
 				> ...
 
+@INFO:
+.forEach() => devrait marcher depuis IE9+ ... mais pas sur un "NodeList"
+
+
+
 */
 
 
@@ -152,15 +157,16 @@ var ListView = function(objModel, objController, id) {
 
 	// on laisse le controller gérer les interactions (elles lui sont "déléguée")
 	el.addEventListener("click", function(evt) {
+		
 		if(/*evt.target.tagName.toUpperCase() == "SPAN" && */ evt.target.className == 'objName') {
-			
+
 			// On recherche quel <li> à été cliqué (car l'event "click" est fait sur le <ul> (parent))
-			var i;
-			evt.target.parentNode.parentNode.childNodes.forEach(function(el, index) {
-				if(el.childNodes[0] == evt.target) {
-					i = index;
+			var list = evt.target.parentNode.parentNode.childNodes;
+			for(var i = 0; i < list.length; i++) {
+				if(list.item(i).childNodes[0] == evt.target) {
+					break;
 				}
-			});
+			};
 
 			// envoi de l'action au controlleur
 			if(objModel instanceof Array) {
@@ -280,7 +286,7 @@ var ListController = function() {
 					var result = model.setPrice( val );
 
 					if(!result) { // si prix non-valide
-						view.warning(value); // value = l'index de la position du <li>
+						view.warn(value); // value = l'index de la position du <li>
 					}
 					break;
 
