@@ -53,7 +53,6 @@ var ObjModel = function(config) {
 	// notifications envoyées vers les "Observers" qui ont souscrit
 	var changed = function() {
 		subscribers.forEach(function(el){
-			console.log("changed");
 			el();
 		});
 	}
@@ -76,8 +75,8 @@ var ObjModel = function(config) {
 		setPrice: function(price_) {
 			if(price_ != price && validatePrice(price_)) { // changement valide ?
 				price = price_;
-				changed();
-				return true; // @TODO: pas utilisé...
+				changed(); // dispatcher l'evenement
+				return true;
 			}else{
 				return false;
 			}
@@ -130,11 +129,11 @@ var ListView = function(objModel, objController, id) {
 		if(objModel instanceof Array) {
 			objModel.forEach(function(obj) {
 				var li = createLine(obj);
-				content.querySelector("ul").append(li);
+				content.querySelector("ul").appendChild(li);
 			});
 		}else{
 			var li = createLine(objModel);
-			content.querySelector("ul").append(li);
+			content.querySelector("ul").appendChild(li);
 		}
 		el.innerHTML = content.innerHTML;
 	}
@@ -154,6 +153,7 @@ var ListView = function(objModel, objController, id) {
 	// on laisse le controller gérer les interactions (elles lui sont "déléguée")
 	el.addEventListener("click", function(evt) {
 		if(/*evt.target.tagName.toUpperCase() == "SPAN" && */ evt.target.className == 'objName') {
+			
 			// On recherche quel <li> à été cliqué (car l'event "click" est fait sur le <ul> (parent))
 			var i;
 			evt.target.parentNode.parentNode.childNodes.forEach(function(el, index) {
@@ -162,6 +162,7 @@ var ListView = function(objModel, objController, id) {
 				}
 			});
 
+			// envoi de l'action au controlleur
 			if(objModel instanceof Array) {
 				if(i!=undefined) {
 					objController.handleMyEvent("clickedItem", objModel[i], me, i);
@@ -285,7 +286,6 @@ var ListController = function() {
 
 				case "changeItem":
 					var result = model.setPriceDelta(value2);
-					console.log(result);
 					if(!result) {
 						view.warning(value); // value = l'index de la position du <li>
 					}else{
