@@ -26,6 +26,10 @@ body {
 	box-shadow: 3px 3px 1px #1B5E20;
 }
 
+.listView li {
+	list-style-type: circle;
+}
+
 .listView li:hover .objName {
 	cursor: pointer;
 	text-decoration: underline;
