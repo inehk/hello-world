@@ -32,6 +32,7 @@
         .skills {
             width: 500px;
             cursor: default;
+            box-shadow: 1px 1px 1px 1px rgb(0, 0, 0); /* IE9+ */
         }
 
         .skills ul {
@@ -56,17 +57,36 @@
             list-style-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAFzUkdCAK7OHOkAAAAEZ0FNQQAAsY8L/GEFAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACl0lEQVQ4T3VTS0wTURQ9M/1Q+0uDYotEpFCgifETjW5MNJqQaIxijCtZgMGYGF1oSNS1ISxgoSxcqqhsDJCQsESMbDBuSLpAQWVaQLSlFAjtAP3MjPfdaURSPc3MvN7Pefede59kEPAfpLMpGPTzlu0pWkpRQpDIRPEh9gZLagwBdy0kSUI8o2D3riqcPtCCKm9jMdLEDoIx5QWiaxE0N3bAMHTEVYWsBva6grDJdox87YXfVYML9XfMBMIfgjGlD2p+BeeCbRiY6oJm5CBLVg7SDY3WMq6GH+LT4jAKRgEX6++yTxavpDoHZXWSkm/gdeQRrLIVDqsbdouDnzKLkyoC3k49xsmqK1hW5/Fj/cs2wfhcPy6H72PocxdcNh9ZJGFmiN0zuRWcqr6GfZ4GDFLMpYZ7GI/1s58Jfqa/0cKCrLYJr6MCm4V15LUscvRfJy3aj/XycRJqlEUVcWtbSybBRn4dFc5qJDfmKMhCmhm4dfwZanyHsd97EG1He+hINoxFX/JRLEQUV7+j0hMikoRZgdkGiQlSm4uIxEdxNtiKprqb7BmY6oTT6uXdzejtI8pOmxfLG/PUqmpoeoF3mVgYovK3OCCSeId0LgULCSugkSYBdx1+0bF9Dr9ZgRBH0zVWXEyeIB2ZecIJEwuDROritZgN0U677KDkANt4DpLUluHpblw/1IlXkQdw28spWBNuTpDoEclp6oaIGZ7uQVNtO01l2KyggsoPlZ/AqPIcrUe6uXV5PUvl5umbw1Yhw98WSv5IFflpMkWywI5Rfh/tw+zKJJrDHSyTaJtwi/GVSYORmaes/vnQbTOBUHKZlmgqxWWKZ2Z5J6G8uGCiyjN0mSo99cVIEyUEfyOTW2VRPaTJvwH8Bmt3Jdtu+aDkAAAAAElFTkSuQmCC);
         }
         .tag {
-            margin: 2px 5px;
+            margin: auto;
             padding: 0 2px;
+            max-width: 50px; /* ??? */
+            /*width: 100px; ??? */
             border-radius: 4px;
-            opacity: 0.7;
+            opacity: 0.5;
             user-select: none;
             font-size: 8pt;
             position: relative;
             top: 2px;
             right: 60px;
             float: right;
+            text-transform: uppercase;
         }
+
+        .tag:hover {
+            opacity: 1;
+            cursor: help;
+            animation: 1s 1 normal slow;
+        }
+
+        @keyframes slow {
+            from {
+                opacity: 0.5;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         .green {
             border: 1px solid DarkGreen;
             background-color: green;
@@ -80,10 +100,7 @@
             border: 1px solid DarkRed;
             background-color: red;
         }
-        .tag:hover {
-            opacity: 1;
-            cursor: help;
-        }
+
         .even {
             border-top: 1px solid grey;
             background-color: lightgrey;
@@ -135,13 +152,13 @@
         .progress:hover:before {
             content: '-';
             position: absolute;
-            margin-left: -15px;
+            margin-left: -12px;
             color: red;
         }
         .progress:hover:after {
             content: '+';
             position: absolute;
-            margin-left: 10px;
+            margin-left: 5px;
             color: green;
         }
 

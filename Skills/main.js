@@ -126,6 +126,7 @@ WebStorage (local ou session) : IE8+
         return function(ev) {
             if(ev.type == 'keydown' && ev.keyCode == 13 || ev.type == 'blur') {
                 currentDescriptionEditionSpan = get('test');
+
                 currentDescriptionEditionSpan.removeEventListener('keydown', funcKeyDown(currentEditedDesc)); // ça marche bien ??
 
                 //console.log(currentDescriptionEditionSpan);
@@ -136,8 +137,12 @@ WebStorage (local ou session) : IE8+
                     currentDescriptionEditionSpan.parentNode.removeChild(currentDescriptionEditionSpan);
 
                     // on réutilise la modification qui vient d'être validée..
-                    writeToLog(currentEditedDesc.innerHTML + ' <b>(DEVIENT)</b> ' + ev.target.value);
-                    currentEditedDesc.innerHTML = ev.target.value;
+                    // Il y a eu un changement ?
+                    if(currentEditedDesc.innerHTML !== ev.target.value) {
+                        writeToLog(currentEditedDesc.innerHTML + ' <b>(DEVIENT)</b> ' + ev.target.value);
+                        currentEditedDesc.innerHTML = ev.target.value;
+                    }
+
                     currentEditedDesc.style.visibility = 'visible';
 
                 } catch (e) {
