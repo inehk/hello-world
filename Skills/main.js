@@ -36,23 +36,33 @@ WebStorage (local ou session) : IE8+
         return {
             "C": {
                 "__desc": "Connaitre le langage C",
-                "__tags": ["difficile"],
+                "__tags": ["difficile", "moyen"],
                 "Pointeurs": {
-                    "__desc": "les pointers !!!",
+                    "__desc": "",
                     "__tags": ["moyen"],
-                    "memcpy": [0, "savoir faire.."],
+                    "tester memcpy": [2, "pour déplacer/copier de la mémoire"],
                     "pointeur sur fonction": [15.5, "comment ça marche ?"]
                 },
                 "stdlib": {
-                    "un truc": [0, "savoir s'en servir.."],
-                    "un autre truc": [90, "comment ça marche ?"]
+                    "__desc": "macros, types, functions, ...",
+                    "__tags": ["moyen"],
+                    "size_t": [0, "a quoi ça sert ?"],
+                    "abort()": [60, "c'est quoi ?"],
+                    "les constantes": {
+                        "__tags": ["facile"],
+                        "EXIT_FAILURE": [0, 'utilité = ?']
+                    }
                 },
-                "les types": [20, "Lister tous les types de données"]
+                "les types": [20, "Lister tous les types de données 'built-in'"]
             },
             "PHP7": {
                 "__tags": ["facile"],
                 "Différences avec le 5.X": [10, "..."],
-                "Installer PHP7 et des extensions": [100, "Fait sur Raspberry PI"]
+                "Installer PHP7 et des extensions": [100, "Fait sur Raspberry PI"],
+                "les nouveautés": {
+                    "opérateur ??" : [0, ''],
+                    "opérateur ?:" : [0, '']
+                }
             }
         };
         //return localStorage.getItem('skills');
@@ -176,7 +186,7 @@ WebStorage (local ou session) : IE8+
 
     function getTotalProgressionRec(skills) {
         for(var i in skills) {
-            if(skills[i] instanceof Array && skills[i].length == 2) {
+            if(i.substr(0, 2) !== '__' && skills[i] instanceof Array && skills[i].length == 2) {
                 sum += skills[i][0];
                 total += 100;
             }else{
