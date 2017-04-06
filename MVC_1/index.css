@@ -1,0 +1,85 @@
+
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+
+body {
+	background-color: #C8E6C9;
+}
+
+#wrap {
+	margin-top: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: top;
+}
+
+.listView {
+	width: 250px;
+	background-color: #26A69A;
+	padding: 10px;
+	margin: 5px;
+	user-select: none;
+	-moz-user-select: none;
+    color: white;
+    font-family: 'Varela Round', sans-serif;
+    letter-spacing: 2px;
+    border-radius: 5px;
+	box-shadow: 3px 3px 1px #1B5E20;
+}
+
+.listView li {
+	list-style-type: circle;
+}
+
+.listView li:hover .objName {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.listView li:hover .objName::after {
+	content: ' (+1€)';
+	color: red;
+}
+
+.listView li .price {
+	position: relative;
+	left: 45px;
+}
+
+.listView li:hover .price {
+	position: relative;
+	left: 5px;
+}
+
+.basketView {
+	position: relative;
+	text-align: center;
+	top: 0;
+	left: calc(50% - 75px); /* IE9+ */
+	width: 150px;
+	height: 200px;
+	margin: 10px;
+	cursor: pointer;
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+.basketView svg {
+	margin-top: 5px;
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+}
+
+.basketView:hover::before {
+	content: '/!\\ ';
+}
+
+.myAnimation {
+	animation: 			monAnimation 2s; /* IE10+ */
+	-webkit-animation: 	monAnimation 2s;
+}
+
+@keyframes monAnimation {
+  0%   {  }
+  100% { background-color: transparent; }
+}
