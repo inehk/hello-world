@@ -18,6 +18,8 @@
 -> Pouvoir déplacer une ligne ! (drag-n-drop)
     -> Voire une liste entière ...
 
+-> Ajouter un SVG animé avec interaction souris (ou touch) ...
+
 @BUG:
 
 
@@ -121,6 +123,7 @@ WebStorage (local ou session) : IE8+
                  currentDescriptionEditionSpan.style.left = e.target.offsetLeft + 'px';
                  currentDescriptionEditionSpan.style.width = e.target.offsetWidth + 'px';
 
+                 inputText.size = 50;
                  inputText.focus(); // Il faut bien que ce <input> soit visible sinon .focus() ne marche pas
 
                  currentDescriptionEditionSpan.addEventListener('keydown', funcKeyDown(currentEditedDescription)); // validation avec <ENTER> ?

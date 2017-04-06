@@ -2,8 +2,10 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>SKILLS</title>
         <style>
+
+        @import url('https://fonts.googleapis.com/css?family=Roboto:100,400');
 
         input {
             border: 0;
@@ -15,8 +17,13 @@
         }
 
         body {
-            font-family: sans-serif;
-            background: linear-gradient(to right, LightGreen, rgba(0,0,0,0)); /* IE10+ */
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            /* pourquoi ça se répete avec "to top right" */
+            background: linear-gradient(to top right, #F9A825, #E64A19); /* IE10+ */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
         }
 
         ul {
@@ -24,13 +31,14 @@
         }
 
         input[type="text"]:focus {
-            background-color: orange;
+            background-color: #009688;
             border-bottom: 3px double red;
             font-style: italic;
         }
 
         .skills {
-            width: 650px;
+            min-width: 650px;
+            width: 60%;
             cursor: default;
             /* Autour du div "principal" */
             box-shadow: 1px 1px 1px 1px rgb(0, 0, 0); /* IE9+ */
@@ -43,6 +51,12 @@
 
         .skills li {
             padding-left: 20px;
+        }
+        .skills li:hover {
+            background-color: white;
+            box-shadow: 0 10px 6px -6px #777; /* IE9+ */
+            text-shadow: 2px 2px 5px grey;
+            z-index: 100; /* pas de différence ... ? */
         }
         .titleDescription {
             letter-spacing: 2px;
@@ -61,11 +75,11 @@
         }
         .tag {
             margin: 1px 2px;
-            padding: 1px 2px 1px 2px;
+            padding: 2px 3px 2px 3px;
             max-width: 60px; /* ??? */
             /*width: 100px; ??? */
-            border-radius: 4px;
-            opacity: 0.5;
+            border-radius: 4px 50%;
+            opacity: 0.4;
             user-select: none;
             font-size: 8pt;
             position: relative;
@@ -78,14 +92,17 @@
         .tag:hover {
             opacity: 1;
             cursor: help;
-            animation: 1s 1 normal slow;
+            animation: 0.5s infinite alternate monAnim;
+            animation-fill-mode: forwards; /* pour garder l'état "to" @PLUS UTILE depuis passage à 'infinite' au lieu de '1' */
         }
 
-        @keyframes slow {
+        @keyframes monAnim {
             from {
-                opacity: 0.5;
+                transform: rotate(0deg) scale(1); /* IE9+ */
+                opacity: 0.4;
             }
             to {
+                transform: rotate(12deg) scale(1.33);
                 opacity: 1;
             }
         }
@@ -106,12 +123,18 @@
 
         .even {
             border-top: 1px solid grey;
-            background-color: lightgrey;
+            background-color: #CFD8DC;
         }
         .odd {
             border-top: 1px solid grey;
-            background-color: lightgrey /*LightSteelBlue*/;
+            background-color: #CFD8DC /*LightSteelBlue*/;
         }
+
+        /* attribut 'custom' */
+        li[data-progession='100'] {
+            background-color: darkgrey;
+        }
+        
         .description {
             font-style: italic;
             font-size: 10pt;
@@ -132,6 +155,7 @@
             font-weight: bold;
             text-align: center;
             user-select: none;
+            transform: rotate(15deg) skew(15deg, 5deg); /* skew : oblique/inclinaison .. */
         }
         .progress:after {
             /*content: attr(data-progression);*/
@@ -140,15 +164,17 @@
             text-decoration: line-through;
             background-color: LimeGreen;
         }
+
+        /* Les logs... */
         #log {
             position: fixed;
             padding: 5px;
             right: 0;
             bottom: 0;
-            height: 380px;
-            width: 620px;
+            height: 50%;
+            width: 35%;
             background-color: WhiteSmoke;
-            border: 1px solid lightgrey;
+            border: 3px solid #CFD8DC;
             overflow-y: auto;
         }
 
