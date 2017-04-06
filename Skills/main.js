@@ -19,7 +19,6 @@
     -> Voire une liste entière ...
 
 @BUG:
--> la tâche à 100% semble décalé vers le bas ... pk ?!
 
 
 @XXX:
@@ -91,7 +90,7 @@ WebStorage (local ou session) : IE8+
                  // @TODO : faire progresser la tâche cliquée ...
              }
 
-             if(e.target.className == 'description') {
+             if(e.target.className.indexOf('description') !== -1) {
 
                  currentEditedDescription = e.target;
                  // on masque le <span> de la description
@@ -111,8 +110,6 @@ WebStorage (local ou session) : IE8+
                  currentDescriptionEditionSpan.style.top = (e.target.offsetTop - 2) + 'px';
                  currentDescriptionEditionSpan.style.left = e.target.offsetLeft + 'px';
                  currentDescriptionEditionSpan.style.width = e.target.offsetWidth + 'px';
-
-                 console.log(e);
 
                  inputText.focus(); // Il faut bien que ce <input> soit visible sinon .focus() ne marche pas
 
@@ -244,7 +241,8 @@ WebStorage (local ou session) : IE8+
                 // Liste de listes
                 html += "<ul class='" + (depth%2 ? 'odd' : 'even') + "'><span class='skillNameParent'>" + name + '</span>';
                 if(skills[name].__desc) {
-                    html += " : <span class='description underlined'>" + skills[name].__desc + "</span>";
+                    // description d'une liste
+                    html += " : <span class='description titleDescription'>" + skills[name].__desc + "</span>";
                 }
                 if(skills[name].__tags) {
                     html += addTags(skills[name].__tags);

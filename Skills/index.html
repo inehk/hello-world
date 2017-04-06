@@ -42,27 +42,30 @@
         .skills li {
             padding-left: 25px;
         }
-        .underlined {
-            text-decoration: underline;
+        .titleDescription {
+            letter-spacing: 2px;
         }
         .skillName {
             text-decoration: underline;
         }
         .skillNameParent {
             line-height: 1.7;
+            font-weight: 800;
         }
         .validedSkill {
-            padding: 16px;
             list-style-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAFzUkdCAK7OHOkAAAAEZ0FNQQAAsY8L/GEFAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACl0lEQVQ4T3VTS0wTURQ9M/1Q+0uDYotEpFCgifETjW5MNJqQaIxijCtZgMGYGF1oSNS1ISxgoSxcqqhsDJCQsESMbDBuSLpAQWVaQLSlFAjtAP3MjPfdaURSPc3MvN7Pefede59kEPAfpLMpGPTzlu0pWkpRQpDIRPEh9gZLagwBdy0kSUI8o2D3riqcPtCCKm9jMdLEDoIx5QWiaxE0N3bAMHTEVYWsBva6grDJdox87YXfVYML9XfMBMIfgjGlD2p+BeeCbRiY6oJm5CBLVg7SDY3WMq6GH+LT4jAKRgEX6++yTxavpDoHZXWSkm/gdeQRrLIVDqsbdouDnzKLkyoC3k49xsmqK1hW5/Fj/cs2wfhcPy6H72PocxdcNh9ZJGFmiN0zuRWcqr6GfZ4GDFLMpYZ7GI/1s58Jfqa/0cKCrLYJr6MCm4V15LUscvRfJy3aj/XycRJqlEUVcWtbSybBRn4dFc5qJDfmKMhCmhm4dfwZanyHsd97EG1He+hINoxFX/JRLEQUV7+j0hMikoRZgdkGiQlSm4uIxEdxNtiKprqb7BmY6oTT6uXdzejtI8pOmxfLG/PUqmpoeoF3mVgYovK3OCCSeId0LgULCSugkSYBdx1+0bF9Dr9ZgRBH0zVWXEyeIB2ZecIJEwuDROritZgN0U677KDkANt4DpLUluHpblw/1IlXkQdw28spWBNuTpDoEclp6oaIGZ7uQVNtO01l2KyggsoPlZ/AqPIcrUe6uXV5PUvl5umbw1Yhw98WSv5IFflpMkWywI5Rfh/tw+zKJJrDHSyTaJtwi/GVSYORmaes/vnQbTOBUHKZlmgqxWWKZ2Z5J6G8uGCiyjN0mSo99cVIEyUEfyOTW2VRPaTJvwH8Bmt3Jdtu+aDkAAAAAElFTkSuQmCC);
         }
         .tag {
             margin: 2px 5px;
+            padding: 0 2px;
             border-radius: 4px;
             opacity: 0.7;
             user-select: none;
             font-size: 8pt;
             position: relative;
-            top: -6px;
+            top: 2px;
+            right: 60px;
+            float: right;
         }
         .green {
             border: 1px solid DarkGreen;
@@ -82,10 +85,12 @@
             cursor: help;
         }
         .even {
+            border-top: 1px solid grey;
             background-color: lightgrey;
         }
         .odd {
-            background-color: LightSteelBlue;
+            border-top: 1px solid grey;
+            background-color: lightgrey /*LightSteelBlue*/;
         }
         .description {
             font-style: italic;
@@ -103,7 +108,7 @@
         .progress {
             float: right;
             right: 0;
-            width: 40px;
+            width: 80px;
             font-weight: bold;
             text-align: center;
             user-select: none;
@@ -127,20 +132,18 @@
             overflow-y: auto;
         }
 
-        /*
         .progress:hover:before {
             content: '-';
-            position: relative;
-            left: -5px;
+            position: absolute;
+            margin-left: -15px;
             color: red;
         }
         .progress:hover:after {
             content: '+';
-            position: relative;
-            left: 5px;
+            position: absolute;
+            margin-left: 10px;
             color: green;
         }
-        */
 
         </style>
     </head>
