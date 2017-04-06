@@ -1,0 +1,186 @@
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,400');
+
+input {
+    border: 0;
+    margin: 0;
+}
+
+*:focus {
+    outline: none;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    /* pourquoi ça se répete avec "to top right" */
+    background: linear-gradient(to top right, #F9A825, #E64A19); /* IE10+ */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+}
+
+ul {
+    list-style-type: none;
+}
+
+input[type="text"]:focus {
+    background-color: #009688;
+    border-bottom: 3px double red;
+    font-style: italic;
+}
+
+.skills {
+    min-width: 650px;
+    width: 60%;
+    cursor: default;
+    /* Autour du div "principal" */
+    box-shadow: 1px 1px 1px 1px rgb(0, 0, 0); /* IE9+ */
+    background-color: Silver;
+}
+
+.skills ul {
+    padding-left: 10px;
+}
+
+.skills li {
+    padding-left: 20px;
+}
+.skills li:hover {
+    background-color: white;
+    box-shadow: 0 10px 6px -6px #777; /* IE9+ */
+    text-shadow: 2px 2px 5px grey;
+    z-index: 100; /* pas de différence ... ? */
+}
+.titleDescription {
+    letter-spacing: 2px;
+}
+.skillName {
+    text-decoration: underline;
+}
+.skillNameParent {
+    line-height: 1.7;
+    font-weight: 800;
+}
+.validedSkill {
+    margin-left: 20px;
+    padding-left: 0px !important;
+    list-style-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAFzUkdCAK7OHOkAAAAEZ0FNQQAAsY8L/GEFAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACl0lEQVQ4T3VTS0wTURQ9M/1Q+0uDYotEpFCgifETjW5MNJqQaIxijCtZgMGYGF1oSNS1ISxgoSxcqqhsDJCQsESMbDBuSLpAQWVaQLSlFAjtAP3MjPfdaURSPc3MvN7Pefede59kEPAfpLMpGPTzlu0pWkpRQpDIRPEh9gZLagwBdy0kSUI8o2D3riqcPtCCKm9jMdLEDoIx5QWiaxE0N3bAMHTEVYWsBva6grDJdox87YXfVYML9XfMBMIfgjGlD2p+BeeCbRiY6oJm5CBLVg7SDY3WMq6GH+LT4jAKRgEX6++yTxavpDoHZXWSkm/gdeQRrLIVDqsbdouDnzKLkyoC3k49xsmqK1hW5/Fj/cs2wfhcPy6H72PocxdcNh9ZJGFmiN0zuRWcqr6GfZ4GDFLMpYZ7GI/1s58Jfqa/0cKCrLYJr6MCm4V15LUscvRfJy3aj/XycRJqlEUVcWtbSybBRn4dFc5qJDfmKMhCmhm4dfwZanyHsd97EG1He+hINoxFX/JRLEQUV7+j0hMikoRZgdkGiQlSm4uIxEdxNtiKprqb7BmY6oTT6uXdzejtI8pOmxfLG/PUqmpoeoF3mVgYovK3OCCSeId0LgULCSugkSYBdx1+0bF9Dr9ZgRBH0zVWXEyeIB2ZecIJEwuDROritZgN0U677KDkANt4DpLUluHpblw/1IlXkQdw28spWBNuTpDoEclp6oaIGZ7uQVNtO01l2KyggsoPlZ/AqPIcrUe6uXV5PUvl5umbw1Yhw98WSv5IFflpMkWywI5Rfh/tw+zKJJrDHSyTaJtwi/GVSYORmaes/vnQbTOBUHKZlmgqxWWKZ2Z5J6G8uGCiyjN0mSo99cVIEyUEfyOTW2VRPaTJvwH8Bmt3Jdtu+aDkAAAAAElFTkSuQmCC);
+}
+.tag {
+    margin: 1px 2px;
+    padding: 2px 3px 2px 3px;
+    max-width: 60px; /* ??? */
+    /*width: 100px; ??? */
+    border-radius: 4px 50%;
+    opacity: 0.4;
+    user-select: none;
+    font-size: 8pt;
+    position: relative;
+    top: 2px;
+    right: 60px;
+    float: right;
+    text-transform: uppercase;
+}
+
+.tag:hover {
+    opacity: 1;
+    cursor: help;
+    animation: 0.5s infinite alternate monAnim;
+    animation-fill-mode: forwards; /* pour garder l'état "to" @PLUS UTILE depuis passage à 'infinite' au lieu de '1' */
+}
+
+@keyframes monAnim {
+    from {
+        transform: rotate(0deg) scale(1); /* IE9+ */
+        opacity: 0.4;
+    }
+    to {
+        transform: rotate(12deg) scale(1.33);
+        opacity: 1;
+    }
+}
+
+.green {
+    border: 1px solid DarkGreen;
+    background-color: green;
+    color: white;
+}
+.orange {
+    border: 1px solid DarkOrange;
+    background-color: orange;
+}
+.red {
+    border: 1px solid DarkRed;
+    background-color: red;
+}
+
+.even {
+    border-top: 1px solid grey;
+    background-color: #CFD8DC;
+}
+.odd {
+    border-top: 1px solid grey;
+    background-color: #CFD8DC /*LightSteelBlue*/;
+}
+
+/* attribut 'custom' */
+li[data-progession='100'] {
+    background-color: darkgrey;
+}
+
+.description {
+    font-style: italic;
+    font-size: 10pt;
+    cursor: text;
+}
+.description:hover:after {
+    content: '[editer]';
+    font-style: italic;
+    font-size: 8pt;
+    position: relative;
+    left: 5px;
+    color: green;
+}
+.progress {
+    float: right;
+    right: 0;
+    width: 80px;
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+    transform: rotate(15deg) skew(15deg, 5deg); /* skew : oblique/inclinaison .. */
+}
+.progress:after {
+    /*content: attr(data-progression);*/
+}
+.finished {
+    text-decoration: line-through;
+    background-color: LimeGreen;
+}
+
+/* Les logs... */
+#log {
+    position: fixed;
+    padding: 5px;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    width: 35%;
+    background-color: WhiteSmoke;
+    border: 3px solid #CFD8DC;
+    overflow-y: auto;
+}
+
+.progress:hover:before {
+    content: '-';
+    position: absolute;
+    margin-left: -12px;
+    color: red;
+}
+.progress:hover:after {
+    content: '+';
+    position: absolute;
+    margin-left: 5px;
+    color: green;
+}
