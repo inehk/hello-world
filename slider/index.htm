@@ -40,6 +40,7 @@
 
       /* SLIDER Style ! */
       slider {
+        width: 300px;
         padding: 1px;
         margin-bottom: 20px;
 
@@ -107,6 +108,8 @@
       }
 
       #buttons button {
+        position: relative;
+        left: 5%;
         width: 90%;
       }
 
@@ -122,13 +125,20 @@
                 current=0
                 label="R">
         </slider>
+
         <slider max=255
                 current=128
                 label="G">
         </slider>
+
         <slider max=255
                 current=255
                 label="B">
+        </slider>
+
+        <slider max=1
+                current=0.4
+                label="A">
         </slider>
       </div>
 
@@ -155,6 +165,11 @@
             var current = me.rootTag.getAttribute('current') || 0;
             var suffix = me.rootTag.getAttribute('suffix') || '';
 
+            me.rootWidth = me.rootTag.offsetWidth;
+            me.max = max;
+            me.current = current;
+            me.suffix = suffix;
+
             // @TODO
             // pour le drag-n-drop : http://caniuse.com/#feat=dragndrop (IE/Edge : pas de .setDragImage() ???)
             // me.rootTag.draggable = true;
@@ -162,25 +177,25 @@
             // Le fond du slider
             var mainBar = document.createElement('div');
             mainBar.className = 'mainBar';
-            if(max) { mainBar.style.width = max + 'px'; }
+            mainBar.style.width = '100%';
             me.rootTag.appendChild(mainBar);
 
             // L'état "d'avancement" courant
             var currentBar = document.createElement('div');
             currentBar.className = 'currentBar';
-            currentBar.style.width = current + 'px';
+            currentBar.style.width = Math.round(current / me.max * me.rootWidth) + 'px';
             me.rootTag.appendChild(currentBar);
 
             // le truc pour modifier la valeur...
             var grab = document.createElement('div');
-            grab.style.left = (current - 4) + 'px';
+            grab.style.left = (Math.round(current / me.max * me.rootWidth) - 4) + 'px';
             grab.className = 'grab';
             me.rootTag.appendChild(grab);
 
             // Text ...
             var text = document.createElement('span');
             text.className = 'value';
-            text.style.left = (current - 6) + 'px';
+            text.style.left = (Math.round(current / me.max * me.rootWidth) - 6) + 'px';
             text.innerHTML = current + suffix;
             me.rootTag.appendChild(text);
 
@@ -198,9 +213,9 @@
 
             // on déplace le curseur
             function movingGrabber(e) {
-              var pixels = e.pageX - me.rootTag.offsetLeft;
-              if(pixels >= 0 && pixels <= max) {
-                me.moveTo(pixels);
+              var value = (e.pageX - me.rootTag.offsetLeft) / me.rootWidth * me.max;
+              if(value >= 0 && value <= max) {
+                me.moveTo(value);
               }
             }
 
@@ -227,17 +242,14 @@
             me.grabber = grab;
             me.text = text;
 
-            me.max = max;
-            me.current = current;
-            me.suffix = suffix;
           }
 
-          me.moveTo = function(valueInPixel) {
-            me.currentBar.style.width = valueInPixel + 'px';
-            me.grabber.style.left = (valueInPixel - 4) + 'px';
-            me.text.style.left = (valueInPixel - 6) + 'px';
-            me.text.innerHTML = Math.round(valueInPixel) + me.suffix;
-            me.current = valueInPixel;
+          me.moveTo = function(value) {
+            me.currentBar.style.width = Math.round(value / me.max * me.rootWidth) + 'px';
+            me.grabber.style.left = (Math.round(value / me.max * me.rootWidth) - 4) + 'px';
+            me.text.style.left = (Math.round(value / me.max * me.rootWidth) - 6) + 'px';
+            me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
+            me.current = value;
             changeBackgroundColor();
           }
 
@@ -250,7 +262,7 @@
               return me.max;
             },
             getValue: function() {
-              return Math.round(me.current);
+              return me.max > 1 ? Math.round(me.current) : me.current;
             }
           }
         }
@@ -279,7 +291,8 @@
         var R = sliders[0].getValue();
         var G = sliders[1].getValue();
         var B = sliders[2].getValue();
-        document.body.style.backgroundColor = 'rgba('+R+', '+G+', '+B+', 1)'; // rgba : IE9+
+        var A = sliders[3].getValue();
+        document.body.style.backgroundColor = 'rgba('+R+', '+G+', '+B+', '+A+')'; // rgba : IE9+
       }
 
     </script>
