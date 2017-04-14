@@ -9,21 +9,29 @@
         width: 20%;
         margin: auto;
         margin-top: 100px;
-        user-select: none;
+
+         /* textes non sélectionnables */
+        -ms-user-select: none; /* IE10+ / Edge */
+        -webkit-user-select: none; /* Chrome */
+        -moz-user-select: none; /* Firefox */
+        user-select: none; /* Chrome 41+ */
       }
 
       /* SLIDER Style ! */
+        /* Le fond du slider */
       slider .mainBar {
         background-color: red;
         width: 100%;
         height: 4px;
       }
+        /* La barre d'avancement */
       slider .currentBar {
         background-color: green;
         height: 2px;
         position: relative;
         top: -3px;
       }
+        /* le selecteur */
       slider .grab {
         width: 8px;
         height: 8px;
@@ -33,6 +41,7 @@
         top: -8px;
         cursor: pointer;
       }
+        /* le text */
       slider .value {
         width: 100px;
         color: red;
@@ -41,7 +50,7 @@
         top: -32px;
         font-size: 8pt;
         font-family: monospace;
-        cursor: default;
+        cursor: default; /* pas de curseur "I" */
       }
       /* ------ */
 
@@ -123,16 +132,12 @@
         }
 
 
-        function createSlider(tag) {
-          return new Slider(tag)
-        }
-
         // on initialise tous les tags <slider>
         var slidersTags = document.getElementsByTagName('slider');
         w.sliders = []; // "global" : la liste de tous les sliders
         for(var i in slidersTags) {
           if(slidersTags[i].nodeType == 1) {
-            w.sliders.push(createSlider(slidersTags[i]));
+            w.sliders.push(new Slider(slidersTags[i]));
           }
         }
 
