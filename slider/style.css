@@ -114,3 +114,12 @@ slider .value {
   background-color: lightgray;
   text-align: center;
 }
+
+#mySVG {
+  width: 250px;
+  height: 100px;
+  margin-left: calc(50% - 250px / 2);
+  margin-top: 20px;
+  background-color: transparent;
+  opacity: 1;
+}

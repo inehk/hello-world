@@ -13,7 +13,6 @@
   <body>
 
     <div id="main">
-
       <div id="sliders">
         <!-- "custom tags" => /!\ avec IE 6-8, les "déclarer" avec un .createElement() ... -->
         <slider max=255
@@ -36,12 +35,19 @@
                 label="A">
         </slider>
       </div>
-
       <div style="clear: both;"></div>
-
       <div id="buttons">
         <button id="myButton">Aléatoire !</button>
       </div>
+      <svg id="mySVG">
+        <defs>
+          <filter id="f1" x="0" y="0">
+            <!-- A LIRE !!  https://www.smashingmagazine.com/2015/05/why-the-svg-filter-is-awesome/  -->
+            <feTurbulence result="TURBULENCE" baseFrequency="0.08" numOctaves="1" seed="1" />
+            <feDisplacementMap in="SourceGraphic" in2="TURBULENCE" scale="9" />
+          </filter>
+        </defs>
+      </svg>
     </div>
 
     <div id="debug"></div>
@@ -49,6 +55,7 @@
     <!-- appelé à la fin quand le DOM est chargé -->
     <script type="text/javascript" src="slider.js"></script>
     <script type="text/javascript">
+
       // ajout de la fonctionnalité "random" sur le bouton "Aléatoire!"
       document.getElementById('myButton').addEventListener('click', function() {
         sliders.forEach(function(slider) {
@@ -56,7 +63,7 @@
         });
       });
 
-
+      // @TODO : y déplacer ? c'est utilisé par les <slider> ...
       function changeBackgroundColor() {
         var R = sliders[0].getValue();
         var G = sliders[1].getValue();
@@ -65,6 +72,72 @@
         var RGBa = 'rgba('+R+', '+G+', '+B+', '+a+')';
         document.getElementById('debug').innerHTML = RGBa;
         document.body.style.backgroundColor = RGBa; // rgba : IE9+
+
+        // le cercle dans le SVG !
+        document.getElementById('myPoly_1').setAttribute('fill', '#'+R.toString(16)+'0000');
+        document.getElementById('myPoly_2').setAttribute('fill', '#00'+G.toString(16)+'00');
+        document.getElementById('myPoly_3').setAttribute('fill', '#0000'+B.toString(16));
+      }
+
+      // TEST de SVG ...
+      var svgns = "http://www.w3.org/2000/svg";
+
+      /*
+      var circlesCommonProps = {
+        r: 20,
+        fill: '#FFFFFF' // white
+      };
+      function createCircle(params) {
+        var circle_ = document.createElementNS(svgns, "circle");
+        for(var i in params) {  circle_.setAttribute(i, params[i]);  }
+        for(var i in circlesCommonProps) { circle_.setAttribute(i, circlesCommonProps[i]);  }
+        return circle_;
+      }
+      */
+
+
+      var polygonsCommonProps = {
+        stroke: 'black',
+        'stroke-width': 5,
+        fill: '#FFFFFF',
+        filter : 'url(#f1)'
+      };
+
+      function createPolygon(params) {
+        var polygon_ = document.createElementNS(svgns, "polygon");
+        for(var i in params) {  polygon_.setAttribute(i, params[i]);  }
+        for(var i in polygonsCommonProps) { polygon_.setAttribute(i, polygonsCommonProps[i]);  }
+        return polygon_;
+      }
+
+      var mySVG = document.getElementById('mySVG');
+
+      // Ajout de 3 polygones (hexagonales) pour R, G et B
+      var poly, polygons = [];
+      for(var i = 1; i <= 3; i++) {
+
+        var w = 55, h=40;
+        var marginLeft = 15;
+
+        i = parseInt(i); // ...
+
+        var x1 = marginLeft*i + (i-1)*w;
+        var x2 = marginLeft*i + (i-1)*w + 15;
+        var x3 = marginLeft*i + i*w - 15;
+        var x4 = marginLeft*i + i*w;
+
+        var marginTop = 15;
+        var y1 = marginTop;
+        var y2 = marginTop + h/2;
+        var y3 = marginTop + h;
+
+        poly = createPolygon({
+          id: 'myPoly_' + i,
+          // hexagon
+          points: x1+','+y2+' '+x2+','+y1+' '+x3+','+y1+' '+x4+','+y2+' '+x3+','+y3+' '+x2+','+y3
+        });
+        mySVG.appendChild(poly);
+        polygons.push(poly);
       }
 
     </script>
