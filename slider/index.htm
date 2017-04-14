@@ -11,12 +11,15 @@
     <style>
 
       body {
+        /* couleur de fond initiale */
         background-color: rgba(0, 128, 255, 1);
       }
 
       #main {
-        width: 40%;
-        margin: auto;
+
+        /* centrage de la zone principale */
+        width: 40%; /* indispensable en px? pour pouvoir centrer automatiquement ? */
+        margin: auto; /* marges automatique, pour centrer */
         margin-top: 100px;
 
         padding: 20px;
@@ -29,7 +32,7 @@
 
         background-color: grey;
         opacity: 0.8;
-        box-shadow: 2px 2px 5px black;
+        box-shadow: /*left*/2px /*bottom*/4px /*flou*/5px black;
 
       }
 
@@ -157,6 +160,7 @@
         function Slider(tag) {
 
           var me = this;
+          me.initialized = false;
           me.rootTag = tag;
 
           function init() {
@@ -183,22 +187,18 @@
             // L'état "d'avancement" courant
             var currentBar = document.createElement('div');
             currentBar.className = 'currentBar';
-            currentBar.style.width = Math.round(current / me.max * me.rootWidth) + 'px';
             me.rootTag.appendChild(currentBar);
 
             // le truc pour modifier la valeur...
             var grab = document.createElement('div');
-            grab.style.left = (Math.round(current / me.max * me.rootWidth) - 4) + 'px';
             grab.className = 'grab';
             me.rootTag.appendChild(grab);
 
             // Text ...
             var text = document.createElement('span');
             text.className = 'value';
-            text.style.left = (Math.round(current / me.max * me.rootWidth) - 6) + 'px';
             text.innerHTML = current + suffix;
             me.rootTag.appendChild(text);
-
 
             // Début du drag-n-drop !
             /*
@@ -242,6 +242,9 @@
             me.grabber = grab;
             me.text = text;
 
+            me.moveTo(current);
+
+            me.initialized = true;
           }
 
           me.moveTo = function(value) {
@@ -250,7 +253,9 @@
             me.text.style.left = (Math.round(value / me.max * me.rootWidth) - 6) + 'px';
             me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
             me.current = value;
-            changeBackgroundColor();
+            if(me.initialized) {
+              changeBackgroundColor();
+            }
           }
 
           // initialisation du slider
