@@ -16,7 +16,7 @@
       me.suffix = me.rootTag.getAttribute('suffix') || '';
       me.label = me.rootTag.getAttribute('label') || '';
       // la largeur fixe du slider
-      me.rootWidth = me.rootTag.offsetWidth;
+      me.rootWidth = me.rootTag.offsetWidth; // en pixel
 
       // @TODO
       // pour le drag-n-drop : http://caniuse.com/#feat=dragndrop (IE/Edge : pas de .setDragImage() ???)
@@ -25,7 +25,6 @@
       // Le fond du slider
       var mainBar = document.createElement('div');
       mainBar.className = 'mainBar';
-      mainBar.style.width = '100%';
       me.rootTag.appendChild(mainBar);
 
       // L'état "d'avancement" courant
@@ -93,9 +92,9 @@
     } // FIN: init()
 
     me.moveTo = function(value) {
-      me.currentBar.style.width = Math.round(value / me.max * me.rootWidth) + 'px';
-      me.grabber.style.left = (Math.round(value / me.max * me.rootWidth) - 4) + 'px';
-      me.text.style.left = (Math.round(value / me.max * me.rootWidth) - 8) + 'px';
+      me.currentBar.style.width = (Math.round(value / me.max * me.rootWidth) / me.rootWidth * 100) + '%';
+      me.grabber.style.left = ((Math.round(value / me.max * me.rootWidth) - 4) / me.rootWidth * 100) + '%';
+      me.text.style.left = ((Math.round(value / me.max * me.rootWidth) - 8) / me.rootWidth * 100) + '%';
       me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
       me.current = value;
       if(me.initialized) {
