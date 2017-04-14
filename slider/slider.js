@@ -89,7 +89,8 @@
       me.moveTo(me.current);
 
       me.initialized = true;
-    }
+
+    } // FIN: init()
 
     me.moveTo = function(value) {
       me.currentBar.style.width = Math.round(value / me.max * me.rootWidth) + 'px';

@@ -117,10 +117,12 @@ input[type="text"]:focus {
 
 .even {
     border-top: 1px solid grey;
+    border-left: 1px solid grey;
     background-color: #CFD8DC;
 }
 .odd {
     border-top: 1px solid grey;
+    border-left: 1px solid grey;
     background-color: #CFD8DC /*LightSteelBlue*/;
 }
 

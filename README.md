@@ -10,3 +10,6 @@ Divers tests : Java, Web (HTML/JS/CSS) :+1:
 
 ## **WIP** - Liste de compétences ou d'activités à avancer :
 [Skills](https://inehk.github.io/hello-world/Skills/)
+
+## **WIP** - Slider(s) :
+[Outil pour visualiser des couleurs RGBa](https://inehk.github.io/hello-world/slider/)
