@@ -116,6 +116,15 @@
         width: 90%;
       }
 
+      #debug {
+        position: fixed;
+        bottom: 20px;
+        margin-left: calc(50% - 100px);
+        width: 200px;
+        background-color: lightgray;
+        text-align: center;
+      }
+
     </style>
   </head>
   <body>
@@ -150,7 +159,9 @@
       <div id="buttons">
         <button id="myButton">Aléatoire !</button>
       </div>
-  </div>
+    </div>
+
+    <div id="debug"></div>
 
     <!-- appelé à la fin quand le DOM est chargé -->
     <script type="text/javascript">
@@ -250,7 +261,7 @@
           me.moveTo = function(value) {
             me.currentBar.style.width = Math.round(value / me.max * me.rootWidth) + 'px';
             me.grabber.style.left = (Math.round(value / me.max * me.rootWidth) - 4) + 'px';
-            me.text.style.left = (Math.round(value / me.max * me.rootWidth) - 6) + 'px';
+            me.text.style.left = (Math.round(value / me.max * me.rootWidth) - 8) + 'px';
             me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
             me.current = value;
             if(me.initialized) {
@@ -267,7 +278,7 @@
               return me.max;
             },
             getValue: function() {
-              return me.max > 1 ? Math.round(me.current) : me.current;
+              return me.max > 1 ? Math.round(me.current) : Math.round(me.current*100)/100;
             }
           }
         }
@@ -296,8 +307,10 @@
         var R = sliders[0].getValue();
         var G = sliders[1].getValue();
         var B = sliders[2].getValue();
-        var A = sliders[3].getValue();
-        document.body.style.backgroundColor = 'rgba('+R+', '+G+', '+B+', '+A+')'; // rgba : IE9+
+        var a = sliders[3].getValue();
+        var RGBa = 'rgba('+R+', '+G+', '+B+', '+a+')';
+        document.getElementById('debug').innerHTML = RGBa;
+        document.body.style.backgroundColor = RGBa; // rgba : IE9+
       }
 
     </script>

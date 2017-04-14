@@ -1,0 +1,67 @@
+/*
+-> faire marche la leftSideBar !
+  flex ?
+*/
+
+/* IE5.5+ */
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+
+body {
+    margin: 0;
+    background-color: #CEE9F4;
+    /*height: 100%;*/
+    font-family: 'Varela Round', sans-serif;
+    /*display: flex; /* IE11+ */
+    letter-spacing: 2px;
+    flex-direction: row;*/
+}
+
+#leftSideBar {
+    width: 10%;
+    min-width: 100px;
+    background-color: darkblue;
+    color: white;
+    /*flex-grow: 1;*/
+    white-space: pre-line;
+    height: calc(100%); /* marche pas */
+}
+
+.widget {
+    opacity: 0.3;
+    text-align: center;
+    display: inline-block; /* se comporte comme un <span> ? */
+    margin-left: 10px;
+    margin-top: 10px;
+    border: 1px solid grey;
+}
+
+.widget:hover {
+    opacity: 1;
+    -webkit-animation-name: tourne;
+		        animation-name: tourne;
+		-webkit-animation-duration: 1s;
+		        animation-duration: 1s;
+}
+
+/* Chrome ? */
+@-webkit-keyframes tourne {
+		from {
+  			-webkit-transform: rotate(0deg);
+  			        transform: rotate(0deg);
+		}
+		to {
+  			-webkit-transform: rotate(360deg);
+			          transform: rotate(360deg);
+		}
+}
+
+@keyframes tourne {
+		from {
+  			-webkit-transform: rotate(0deg);
+  			        transform: rotate(0deg);
+		}
+		to {
+  			-webkit-transform: rotate(360deg);
+			          transform: rotate(360deg);
+		}
+}
