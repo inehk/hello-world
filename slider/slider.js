@@ -142,7 +142,7 @@
 
       // Closure...?
       function test(aSlider) {
-        addScrollListener(aSlider.getRoot(), function(e) {
+        addMouseWheelListener(aSlider.getRoot(), function(e) {
           if(e.wheelDeltaY > 0) { // toujours +120 ou -120 ??
             aSlider.addDelta(1);
           }else{
@@ -160,7 +160,7 @@
   //
   // Handler d'évenements "mousewheel" cross-browser
   //
-  function addScrollListener(el, fn) {
+  function addMouseWheelListener(el, fn) {
     if(el.addEventListener){
       // IE9, Chrome, Safari, Opera
       el.addEventListener("mousewheel", fn, false);
