@@ -42,7 +42,7 @@
         height: 0;
         overflow: visible;
 
-        position: relative; /* pour que les position: absolution "enfants" soient "relative" à cet element parent.. */
+        position: relative; /* pour que les 'position: absolute' "enfants" soient "relative" à cet element parent.. */
       }
         /* Le fond du slider */
       slider .mainBar {
@@ -188,7 +188,13 @@
               me.rootTag.removeEventListener('mousemove', movingGrabber);
             });
 
+            // simple click n'importe où sur le slider => change la valeur
+            me.rootTag.addEventListener('click', function(e) {
+              movingGrabber(e);
+            });
+
             //
+            me.mainBar = mainBar;
             me.currentBar = currentBar;
             me.grabber = grab;
             me.text = text;
