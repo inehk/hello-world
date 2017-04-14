@@ -126,5 +126,6 @@
       w.sliders.push(new Slider(slidersTags[i]));
     }
   }
+  w.changeBackgroundColor();
 
 })(window);
