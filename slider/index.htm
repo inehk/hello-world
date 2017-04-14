@@ -41,6 +41,8 @@
         /* http://stackoverflow.com/a/22758437 => pour la hauteur des éléments "relatifs" ?? */
         height: 0;
         overflow: visible;
+
+        position: relative; /* pour que les position: absolution "enfants" soient "relative" à cet element parent.. */
       }
         /* Le fond du slider */
       slider .mainBar {
@@ -63,15 +65,19 @@
         background-color: blue;
         position: relative;
         top: -8px;
+      }
+      slider .grab:hover {
         cursor: pointer;
+        border: 3px solid orange;
+        margin-left: -3px;
+        top: calc(-8px - 3px); /* IE9+ */
       }
         /* le text */
       slider .value {
         width: 100px;
         color: red;
-        margin: auto;
-        position: relative;
-        top: -32px;
+        top: -14px;
+        position: absolute;
         font-size: 8pt;
         font-family: monospace;
         cursor: default; /* pas de curseur "I" */
