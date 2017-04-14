@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Slider</title>
+    <style>
+
+      #main {
+        width: 20%;
+        margin: auto;
+        margin-top: 100px;
+      }
+
+      /* SLIDER Style ! */
+      slider .mainBar {
+        background-color: red;
+        width: 100%;
+        height: 4px;
+      }
+      slider .currentBar {
+        background-color: green;
+        height: 2px;
+        position: relative;
+        top: -3px;
+      }
+      slider .grab {
+        width: 8px;
+        height: 8px;
+        border-radius: 15px;
+        background-color: blue;
+        position: relative;
+        top: -8px;
+        cursor: pointer;
+      }
+      slider .value {
+        width: 100px;
+        color: red;
+        margin: auto;
+        position: relative;
+        top: -32px;
+        font-size: 8pt;
+        font-family: monospace;
+      }
+      /* ------ */
+
+    </style>
+  </head>
+  <body>
+
+    <div id="main">
+      <slider max=100 current=0></slider>
+      <slider max=100 current=25></slider>
+      <slider max=100 current=50></slider>
+      <slider max=100 current=75></slider>
+      <slider max=100 current=100></slider>
+
+      <button id="myButton">Aléatoire !</button>
+
+    </div>
+
+
+    <!-- appelé à la fin quand le DOM est chargé -->
+    <script type="text/javascript">
+      // IIFE
+      (function(w) {
+
+        function Slider(tag) {
+
+          var me = this;
+          me.rootTag = tag;
+
+          function init() {
+
+            var max = me.rootTag.getAttribute('max') || 100;
+            var current = me.rootTag.getAttribute('current') || 0;
+
+            // Le fond du slider
+            var mainBar = document.createElement('div');
+            mainBar.className = 'mainBar';
+            if(max) { mainBar.style.width = max + 'px'; }
+            me.rootTag.appendChild(mainBar);
+
+            // L'état "d'avancement" courant
+            var currentBar = document.createElement('div');
+            currentBar.className = 'currentBar';
+            currentBar.style.width = current + 'px';
+            me.rootTag.appendChild(currentBar);
+
+            // le truc pour modifier la valeur...
+            var grab = document.createElement('div');
+            grab.style.left = ((current ? current : 0) - 4) + 'px';
+            grab.className = 'grab';
+            me.rootTag.appendChild(grab);
+
+            // Text ...
+            var text = document.createElement('span');
+            text.className = 'value';
+            text.style.left = (current - 6) + 'px';
+            text.innerHTML = current + '%';
+            me.rootTag.appendChild(text);
+
+            me.currentBar = currentBar;
+            me.grabber = grab;
+            me.text = text;
+
+          }
+
+          var moveTo = function(valueInPixel) {
+            me.currentBar.style.width = valueInPixel + 'px';
+            me.grabber.style.left = valueInPixel + 'px';
+            me.text.style.left = valueInPixel + 'px';
+            me.text.innerHTML = Math.round(valueInPixel) + '%';
+          }
+
+          // initialisation du slider
+          init();
+
+          return {
+            moveTo: moveTo
+          }
+        }
+
+
+        function createSlider(tag) {
+          return new Slider(tag)
+        }
+
+        // on initialise tous les tags <slider>
+        var slidersTags = document.getElementsByTagName('slider');
+        w.sliders = []; // "global" : la liste de tous les sliders
+        for(var i in slidersTags) {
+          if(slidersTags[i].nodeType == 1) {
+            w.sliders.push(createSlider(slidersTags[i]));
+          }
+        }
+
+      })(window);
+
+      // ajout de la fonctionnalité "random" sur le bouton "Aléatoire!"
+      document.getElementById('myButton').addEventListener('click', function() {
+        sliders.forEach(function(slider) {
+          slider.moveTo(Math.random()*100);
+        });
+      });
+
+    </script>
+  </body>
+</html>
