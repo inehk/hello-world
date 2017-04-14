@@ -66,10 +66,12 @@
         // quand on click sur le "grabber"
       grab.addEventListener('mousedown', function(e) {
         // on détecte les mouvements de souris
+        document.body.style.setProperty("cursor", "none", "important"); // @FIXME: ne marche pas ?!
         document.body.addEventListener('mousemove', movingGrabber);
       });
       // dès qu'on relache la souris (où qu'on soit sur la page)
       document.body.addEventListener('mouseup', function(e) {
+        document.body.style.setProperty("cursor", "default", "important"); // @FIXME: ne marche pas ?!
         // on n'écoute plus l'evenement mousemove sur le slider
         document.body.removeEventListener('mousemove', movingGrabber);
       });
