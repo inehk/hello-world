@@ -25,12 +25,13 @@
       // Le fond du slider
       var mainBar = document.createElement('div');
       mainBar.className = 'mainBar';
-      me.rootTag.appendChild(mainBar);
 
       // L'état "d'avancement" courant
       var currentBar = document.createElement('div');
       currentBar.className = 'currentBar';
-      me.rootTag.appendChild(currentBar);
+      mainBar.appendChild(currentBar);
+
+      me.rootTag.appendChild(mainBar);
 
       // le truc pour modifier la valeur...
       var grab = document.createElement('div');
@@ -57,9 +58,7 @@
       // on déplace le curseur
       function movingGrabber(e) {
         var value = (e.pageX - me.rootTag.offsetLeft) / me.rootWidth * me.max;
-        if(value >= 0 && value <= me.max) {
-          me.moveTo(value);
-        }
+        me.moveTo(value);
       }
 
       // Gestion de la modification manuel du slider
@@ -94,13 +93,15 @@
     } // FIN: init()
 
     me.moveTo = function(value) {
-      me.currentBar.style.width = (Math.round(value / me.max * me.rootWidth) / me.rootWidth * 100) + '%';
-      me.grabber.style.left = ((Math.round(value / me.max * me.rootWidth) - 4) / me.rootWidth * 100) + '%';
-      me.text.style.left = ((Math.round(value / me.max * me.rootWidth) - 8) / me.rootWidth * 100) + '%';
-      me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
-      me.current = value;
-      if(me.initialized) {
-        changeBackgroundColor();
+      if(value >= 0 && value <= me.max) {
+        me.currentBar.style.width = (Math.round(value / me.max * me.rootWidth) / me.rootWidth * 100) + '%';
+        me.grabber.style.left = ((Math.round(value / me.max * me.rootWidth) - 4) / me.rootWidth * 100) + '%';
+        me.text.style.left = ((Math.round(value / me.max * me.rootWidth) - 8) / me.rootWidth * 100) + '%';
+        me.text.innerHTML = (me.max > 1 ? Math.round(value) :  Math.round(value*100)/100) + me.suffix;
+        me.current = value;
+        if(me.initialized) {
+          changeBackgroundColor();
+        }
       }
     }
 
@@ -114,6 +115,17 @@
       },
       getValue: function() {
         return me.max > 1 ? Math.round(me.current) : Math.round(me.current*100)/100;
+      },
+      getRoot: function() {
+        return me.rootTag;
+      },
+      addDelta: function(delta) {
+        if(this.getMax()<=1) {
+          delta *= 0.05;
+        }else{
+          delta *= 2;
+        }
+        me.moveTo(this.getValue() + delta);
       }
     }
   }
@@ -123,10 +135,41 @@
   var slidersTags = document.getElementsByTagName('slider');
   w.sliders = []; // "global" : la liste de tous les sliders
   for(var i in slidersTags) {
+    var s;
     if(slidersTags[i].nodeType == 1) {
-      w.sliders.push(new Slider(slidersTags[i]));
+      s = new Slider(slidersTags[i]);
+      w.sliders.push(s);
+
+      // Closure...?
+      function test(aSlider) {
+        addScrollListener(aSlider.getRoot(), function(e) {
+          if(e.wheelDeltaY > 0) { // toujours +120 ou -120 ??
+            aSlider.addDelta(1);
+          }else{
+            aSlider.addDelta(-1);
+          }
+        });
+      }
+
+      test(s);
     }
   }
   w.changeBackgroundColor();
+
+
+  //
+  // Handler d'évenements "mousewheel" cross-browser
+  //
+  function addScrollListener(el, fn) {
+    if(el.addEventListener){
+      // IE9, Chrome, Safari, Opera
+      el.addEventListener("mousewheel", fn, false);
+      // Firefox
+      el.addEventListener("DOMMouseScroll", fn, false);
+    }else{ // IE 6/7/8
+      el.attachEvent("onmousewheel", fn);
+    }
+  }
+
 
 })(window);

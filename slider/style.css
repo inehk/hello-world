@@ -71,6 +71,9 @@ slider {
 
   position: relative; /* pour que les 'position: absolute' "enfants" soient "relative" à cet element parent.. */
 }
+slider {
+  cursor: pointer;
+}
   /* Le fond du slider */
 slider .mainBar {
   background-color: red;
@@ -78,14 +81,14 @@ slider .mainBar {
   height: 4px;
 }
 slider .mainBar:hover {
-  cursor: pointer;
+  box-shadow: 0 0 7px yellow;
 }
   /* La barre d'avancement */
 slider .currentBar {
   background-color: green;
   height: 2px;
   position: relative;
-  top: -3px;
+  top: 1px;
 }
   /* le selecteur */
 slider .grab {
@@ -94,13 +97,13 @@ slider .grab {
   border-radius: 15px;
   background-color: blue;
   position: relative;
-  top: -8px;
+  top: -6px;
 }
 slider .grab:hover {
   cursor: pointer;
   border: 3px solid orange;
   margin-left: -3px;
-  top: calc(-8px - 3px); /* IE9+ */
+  top: calc(-6px - 3px); /* IE9+ */
 }
   /* le text */
 slider .value {
@@ -139,6 +142,11 @@ button:focus {outline:0;}
   background-color: #BDBDBD;
   text-align: center;
   padding: 5px;
+}
+
+#comment {
+  font-style: italic;
+  font-size: 8pt;
 }
 
 #mySVG {

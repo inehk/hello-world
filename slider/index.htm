@@ -50,6 +50,13 @@
           </filter>
         </defs>
       </svg>
+
+      <div id="comment">
+        <ul>
+          <li>Vous pouvez utiliser la molette de la souris pour changer les valeurs</li>
+        </ul>
+      </div>
+
     </div>
 
     <div id="debug"></div>
@@ -148,7 +155,7 @@
           // le contour de l'hexagon change de couleur
           var poly = polygons[e.target.id.substr(-1)-1];
           poly.setAttribute('stroke', 'red');
-          
+
           // infos
           var infos = document.getElementById('hoverInfos');
           infos.innerHTML = poly.getAttribute('fill');
