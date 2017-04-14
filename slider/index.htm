@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
+
+  <!-- TODO :
+    * Drag-n-Drop sur les sliders !! pour les intervertir
+  -->
+
   <head>
     <meta charset="utf-8">
     <title>Slider</title>
     <style>
+
+      body {
+        background-color: rgba(179, 212, 252, 0.5);
+      }
 
       #main {
         width: 20%;
@@ -15,9 +24,24 @@
         -webkit-user-select: none; /* Chrome */
         -moz-user-select: none; /* Firefox */
         user-select: none; /* Chrome 41+ */
+
       }
 
       /* SLIDER Style ! */
+      slider {
+        margin-bottom: 20px;
+
+        /*permet au slider d'avoir la largeur de son contenu ?? */
+        display: inline-block;
+
+        /* http://stackoverflow.com/questions/14831866/breaking-to-a-new-line-with-inline-block */
+        float: left;
+        clear: left;
+
+        /* http://stackoverflow.com/a/22758437 => pour la hauteur des éléments "relatifs" ?? */
+        height: 0;
+        overflow: visible;
+      }
         /* Le fond du slider */
       slider .mainBar {
         background-color: red;
@@ -54,21 +78,33 @@
       }
       /* ------ */
 
+      #buttons {
+        display: block;
+      }
+
+      #buttons button {
+        width: 100px;
+      }
+
     </style>
   </head>
   <body>
 
     <div id="main">
+
+      <!-- "custom tags" => /!\ avec IE 6-8, les "déclarer" avec un .createElement() ... -->
       <slider max=100 current=0></slider>
       <slider max=100 current=25></slider>
       <slider max=100 current=50></slider>
       <slider max=100 current=75></slider>
       <slider max=100 current=100></slider>
 
-      <button id="myButton">Aléatoire !</button>
+      <div style="clear: both;"></div>
 
-    </div>
-
+      <div id="buttons">
+        <button id="myButton">Aléatoire !</button>
+      </div>
+  </div>
 
     <!-- appelé à la fin quand le DOM est chargé -->
     <script type="text/javascript">
@@ -85,6 +121,10 @@
             var max = me.rootTag.getAttribute('max') || 100;
             var current = me.rootTag.getAttribute('current') || 0;
 
+            // @TODO
+            // pour le drag-n-drop : http://caniuse.com/#feat=dragndrop (IE/Edge : pas de .setDragImage() ???)
+            // me.rootTag.draggable = true;
+
             // Le fond du slider
             var mainBar = document.createElement('div');
             mainBar.className = 'mainBar';
@@ -99,7 +139,7 @@
 
             // le truc pour modifier la valeur...
             var grab = document.createElement('div');
-            grab.style.left = ((current ? current : 0) - 4) + 'px';
+            grab.style.left = (current - 4) + 'px';
             grab.className = 'grab';
             me.rootTag.appendChild(grab);
 
@@ -110,13 +150,45 @@
             text.innerHTML = current + '%';
             me.rootTag.appendChild(text);
 
+
+            // Début du drag-n-drop !
+            /*
+            // @TODO
+            me.rootTag.addEventListener('dragstart', function(e) {
+              // image vide lors du déplacement ...
+              var dragImg = document.createElement('img');
+              dragImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+              e.dataTransfer.setDragImage(dragImg, 0, 0); // image, xOffset, yOffset
+            });
+            */
+
+            // on déplace le curseur
+            function movingGrabber(e) {
+              var pixels = e.pageX - me.rootTag.offsetLeft;
+              if(pixels >= 0 && pixels <= 100) {
+                me.moveTo(pixels);
+              }
+            }
+
+            // Gestion de la modification manuel du slider
+              // quand on click sur le "grabber"
+            grab.addEventListener('mousedown', function(e) {
+              // on détecte les mouvements de souris sur ce slider
+              me.rootTag.addEventListener('mousemove', movingGrabber);
+            });
+            // dès qu'on relache la souris (où qu'on soit sur la page)
+            document.body.addEventListener('mouseup', function(e) {
+              // on n'écoute plus l'evenement mousemove sur le slider
+              me.rootTag.removeEventListener('mousemove', movingGrabber);
+            });
+
+            //
             me.currentBar = currentBar;
             me.grabber = grab;
             me.text = text;
-
           }
 
-          var moveTo = function(valueInPixel) {
+          me.moveTo = function(valueInPixel) {
             me.currentBar.style.width = valueInPixel + 'px';
             me.grabber.style.left = (valueInPixel - 4) + 'px';
             me.text.style.left = (valueInPixel - 6) + 'px';
@@ -127,7 +199,7 @@
           init();
 
           return {
-            moveTo: moveTo
+            moveTo: me.moveTo
           }
         }
 
