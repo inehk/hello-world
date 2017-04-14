@@ -3,6 +3,7 @@
 
   <!-- TODO :
     * Drag-n-Drop sur les sliders !! pour les intervertir
+    * Faire qu'on puisse choisir : Horizontal (par défaut) ou Vertical
   -->
 
   <head>
@@ -51,6 +52,9 @@
     </div>
 
     <div id="debug"></div>
+
+	<!-- information sur la couleur dans l'hexagone -->
+    <div id="hoverInfos"></div>
 
     <!-- appelé à la fin quand le DOM est chargé -->
     <script type="text/javascript">
@@ -118,8 +122,6 @@
         var w = 55, h=40;
         var marginLeft = 15;
 
-        i = parseInt(i); // ...
-
         var x1 = marginLeft*i + (i-1)*w;
         var x2 = marginLeft*i + (i-1)*w + 15;
         var x3 = marginLeft*i + i*w - 15;
@@ -136,6 +138,33 @@
           points: x1+','+y2+' '+x2+','+y1+' '+x3+','+y1+' '+x4+','+y2+' '+x3+','+y3+' '+x2+','+y3
         });
         mySVG.appendChild(poly);
+
+        //
+        // Evenements au survol d'un hexagon SVG
+        //
+        // curseur sur la zone
+        poly.addEventListener('mouseover', function(e) {
+          // le contour de l'hexagon change de couleur
+          var poly = polygons[e.target.id.substr(-1)-1];
+          poly.setAttribute('stroke', 'red');
+          
+          // infos
+          var infos = document.getElementById('hoverInfos');
+          infos.innerHTML = poly.getAttribute('fill');
+          infos.style.display = 'block';
+          infos.style.left = (e.clientX + 15) + 'px';
+          infos.style.top = (e.clientY + 15) + 'px';
+        });
+        // curseur sortie de la zone
+        poly.addEventListener('mouseout', function(e) {
+          document.getElementById('hoverInfos').style.display = 'none';
+
+          // on remet comme avant le survol
+          var poly = polygons[e.target.id.substr(-1)-1];
+          poly.setAttribute('stroke', 'black');
+        });
+
+        // ...
         polygons.push(poly);
       }
 

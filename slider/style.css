@@ -8,7 +8,7 @@ body {
 
   /* centrage de la zone principale */
   width: 40%; /* indispensable en px? pour pouvoir centrer automatiquement ? */
-  margin: auto; /* marges automatique, pour centrer */
+  margin: 0 auto; /* marges automatique sur l'horizontal, pour centrer */
   margin-top: 100px;
 
   padding: 20px;
@@ -122,4 +122,16 @@ slider .value {
   margin-top: 20px;
   background-color: transparent;
   opacity: 1;
+}
+
+#hoverInfos {
+  position: fixed;
+  width: 100px;
+  text-align: center;
+  display: none;
+  border-radius: 3px;
+  border: 3px solid #004D40;
+  background-color: #00695C;
+  color: white;
+  font-family: sans-serif;
 }
