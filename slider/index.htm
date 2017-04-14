@@ -179,13 +179,13 @@
             // Gestion de la modification manuel du slider
               // quand on click sur le "grabber"
             grab.addEventListener('mousedown', function(e) {
-              // on détecte les mouvements de souris sur ce slider
-              me.rootTag.addEventListener('mousemove', movingGrabber);
+              // on détecte les mouvements de souris
+              document.body.addEventListener('mousemove', movingGrabber);
             });
             // dès qu'on relache la souris (où qu'on soit sur la page)
             document.body.addEventListener('mouseup', function(e) {
               // on n'écoute plus l'evenement mousemove sur le slider
-              me.rootTag.removeEventListener('mousemove', movingGrabber);
+              document.body.removeEventListener('mousemove', movingGrabber);
             });
 
             // simple click n'importe où sur le slider => change la valeur
