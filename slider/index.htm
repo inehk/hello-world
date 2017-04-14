@@ -118,8 +118,8 @@
 
           var moveTo = function(valueInPixel) {
             me.currentBar.style.width = valueInPixel + 'px';
-            me.grabber.style.left = valueInPixel + 'px';
-            me.text.style.left = valueInPixel + 'px';
+            me.grabber.style.left = (valueInPixel - 4) + 'px';
+            me.text.style.left = (valueInPixel - 6) + 'px';
             me.text.innerHTML = Math.round(valueInPixel) + '%';
           }
 
