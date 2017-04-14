@@ -2,19 +2,24 @@
 <html>
 
   <!-- TODO :
-    * Drag-n-Drop sur les sliders !! pour les intervertir
+
+    * #DOING Enregistrer/supprimer des couleurs en local !
+      * Drag-n-Drop sur les sliders !! pour les intervertir
+
+    @PLUS_TARD
     * Faire qu'on puisse choisir : Horizontal (par défaut) ou Vertical
   -->
 
   <head>
     <meta charset="utf-8">
-    <title>Slider</title>
+    <title>RGBa</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
 
+  <body>
     <div id="main">
       <div id="header">Choisissez une couleur</div>
+
       <div id="sliders">
         <!-- "custom tags" => /!\ avec IE 6-8, les "déclarer" avec un .createElement() ... -->
         <slider max=255
@@ -37,10 +42,14 @@
                 label="A">
         </slider>
       </div>
+
       <div style="clear: both;"></div>
+
       <div id="buttons">
         <button id="myButton">Aléatoire !</button>
+        <!--button id="saveButton">Enregistrer</button-->
       </div>
+
       <svg id="mySVG">
         <defs>
           <filter id="f1" x="0" y="0">
@@ -61,7 +70,7 @@
 
     <div id="debug"></div>
 
-	<!-- information sur la couleur dans l'hexagone -->
+	  <!-- information sur la couleur dans l'hexagone -->
     <div id="hoverInfos"></div>
 
     <!-- appelé à la fin quand le DOM est chargé -->
@@ -93,20 +102,6 @@
       // TEST de SVG ...
       var svgns = "http://www.w3.org/2000/svg";
 
-      /*
-      var circlesCommonProps = {
-        r: 20,
-        fill: '#FFFFFF' // white
-      };
-      function createCircle(params) {
-        var circle_ = document.createElementNS(svgns, "circle");
-        for(var i in params) {  circle_.setAttribute(i, params[i]);  }
-        for(var i in circlesCommonProps) { circle_.setAttribute(i, circlesCommonProps[i]);  }
-        return circle_;
-      }
-      */
-
-
       var polygonsCommonProps = {
         stroke: 'transparent',
         'stroke-width': 5,
@@ -127,15 +122,13 @@
       var poly, polygons = [];
       for(var i = 1; i <= 3; i++) {
 
-        var w = 55, h=40;
-        var marginLeft = 15;
-
+        var w = 55, h = 40, marginLeft = 15, marginTop = 15;
+        // Axe X (horizontal)
         var x1 = marginLeft*i + (i-1)*w;
         var x2 = marginLeft*i + (i-1)*w + 15;
         var x3 = marginLeft*i + i*w - 15;
         var x4 = marginLeft*i + i*w;
-
-        var marginTop = 15;
+        // Axe Y (vertical)
         var y1 = marginTop;
         var y2 = marginTop + h/2;
         var y3 = marginTop + h;
@@ -145,12 +138,13 @@
           // hexagon
           points: x1+','+y2+' '+x2+','+y1+' '+x3+','+y1+' '+x4+','+y2+' '+x3+','+y3+' '+x2+','+y3
         });
+        // on l'ajoute au SVG
         mySVG.appendChild(poly);
 
         //
         // Evenements au survol d'un hexagon SVG
         //
-        // curseur sur la zone
+          // curseur sur la zone
         poly.addEventListener('mouseover', function(e) {
           // le contour de l'hexagon change de couleur
           var poly = polygons[e.target.id.substr(-1)-1];
@@ -158,7 +152,7 @@
 
           // infos
           var infos = document.getElementById('hoverInfos');
-          infos.innerHTML = poly.getAttribute('fill');
+          infos.innerHTML = poly.getAttribute('fill'); // contenu affiché = couleur de l'hexagone
           infos.style.display = 'block';
           infos.style.left = (e.clientX + 15) + 'px';
           infos.style.top = (e.clientY + 15) + 'px';

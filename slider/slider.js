@@ -120,10 +120,11 @@
         return me.rootTag;
       },
       addDelta: function(delta) {
-        if(this.getMax()<=1) {
-          delta *= 0.05;
-        }else{
-          delta *= 2;
+        var max = this.getMax();
+        if(max<=1) {
+          delta *= 0.02;
+        }else if(max > 25){
+          delta *= 3;
         }
         me.moveTo(this.getValue() + delta);
       }

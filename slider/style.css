@@ -12,6 +12,7 @@ body {
 #header {
   font-weight: 500;
   font-family: Impact, Charcoal, sans-serif;
+  text-decoration: underline;
   margin-bottom: 30px;
   word-spacing: 7px;
   letter-spacing: 6px;
@@ -42,6 +43,7 @@ body {
 
   padding: 20px;
   border-radius: 3px;
+  border: 1px solid white;
 
    /* textes non sélectionnables */
   -ms-user-select: none; /* IE10+ / Edge */
@@ -49,9 +51,9 @@ body {
   -moz-user-select: none; /* Firefox */
   user-select: none; /* Chrome 41+ */
 
-  background-color: #9E9E9E;
+  background-color: #B0BEC5;
   opacity: 0.8;
-  box-shadow: /*left*/2px /*bottom*/4px /*flou*/5px #666666;
+  box-shadow: /*left*/1px /*bottom*/2px /*flou*/4px #666666;
 
 }
 
@@ -133,8 +135,10 @@ slider .value {
   margin: auto;
 }
 
-#buttons button {
-  background: repeating-linear-gradient(
+button:focus {outline:0;}
+
+#myButton {
+  background: repeating-linear-gradient( /* IE10+ */
     45deg,
     #222,
     #222 10px,
@@ -149,7 +153,10 @@ slider .value {
   font-size: 14pt;
   color: white;
 }
-button:focus {outline:0;}
+
+#saveButton {
+
+}
 
 #debug {
   position: fixed;
