@@ -11,13 +11,15 @@
     <style>
 
       body {
-        background-color: rgba(179, 212, 252, 0.5);
+        background-color: rgba(0, 128, 255, 1);
       }
 
       #main {
-        width: 20%;
+        width: 40%;
         margin: auto;
         margin-top: 100px;
+
+        padding: 20px;
 
          /* textes non sélectionnables */
         -ms-user-select: none; /* IE10+ / Edge */
@@ -25,10 +27,20 @@
         -moz-user-select: none; /* Firefox */
         user-select: none; /* Chrome 41+ */
 
+        background-color: grey;
+        opacity: 0.8;
+        box-shadow: 2px 2px 5px black;
+
+      }
+
+      #sliders {
+        margin: auto;
+        width: 300px;
       }
 
       /* SLIDER Style ! */
       slider {
+        padding: 1px;
         margin-bottom: 20px;
 
         /*permet au slider d'avoir la largeur de son contenu ?? */
@@ -49,6 +61,9 @@
         background-color: red;
         width: 100%;
         height: 4px;
+      }
+      slider .mainBar:hover {
+        cursor: pointer;
       }
         /* La barre d'avancement */
       slider .currentBar {
@@ -75,7 +90,8 @@
         /* le text */
       slider .value {
         width: 100px;
-        color: red;
+        color: white;
+        font-weight: 800;
         top: -14px;
         position: absolute;
         font-size: 8pt;
@@ -86,10 +102,12 @@
 
       #buttons {
         display: block;
+        width: 300px;
+        margin: auto;
       }
 
       #buttons button {
-        width: 100px;
+        width: 90%;
       }
 
     </style>
@@ -98,12 +116,21 @@
 
     <div id="main">
 
-      <!-- "custom tags" => /!\ avec IE 6-8, les "déclarer" avec un .createElement() ... -->
-      <slider max=100 current=0></slider>
-      <slider max=100 current=25></slider>
-      <slider max=100 current=50></slider>
-      <slider max=100 current=75></slider>
-      <slider max=100 current=100></slider>
+      <div id="sliders">
+        <!-- "custom tags" => /!\ avec IE 6-8, les "déclarer" avec un .createElement() ... -->
+        <slider max=255
+                current=0
+                label="R">
+        </slider>
+        <slider max=255
+                current=128
+                label="G">
+        </slider>
+        <slider max=255
+                current=255
+                label="B">
+        </slider>
+      </div>
 
       <div style="clear: both;"></div>
 
@@ -126,6 +153,7 @@
 
             var max = me.rootTag.getAttribute('max') || 100;
             var current = me.rootTag.getAttribute('current') || 0;
+            var suffix = me.rootTag.getAttribute('suffix') || '';
 
             // @TODO
             // pour le drag-n-drop : http://caniuse.com/#feat=dragndrop (IE/Edge : pas de .setDragImage() ???)
@@ -153,7 +181,7 @@
             var text = document.createElement('span');
             text.className = 'value';
             text.style.left = (current - 6) + 'px';
-            text.innerHTML = current + '%';
+            text.innerHTML = current + suffix;
             me.rootTag.appendChild(text);
 
 
@@ -171,7 +199,7 @@
             // on déplace le curseur
             function movingGrabber(e) {
               var pixels = e.pageX - me.rootTag.offsetLeft;
-              if(pixels >= 0 && pixels <= 100) {
+              if(pixels >= 0 && pixels <= max) {
                 me.moveTo(pixels);
               }
             }
@@ -198,20 +226,32 @@
             me.currentBar = currentBar;
             me.grabber = grab;
             me.text = text;
+
+            me.max = max;
+            me.current = current;
+            me.suffix = suffix;
           }
 
           me.moveTo = function(valueInPixel) {
             me.currentBar.style.width = valueInPixel + 'px';
             me.grabber.style.left = (valueInPixel - 4) + 'px';
             me.text.style.left = (valueInPixel - 6) + 'px';
-            me.text.innerHTML = Math.round(valueInPixel) + '%';
+            me.text.innerHTML = Math.round(valueInPixel) + me.suffix;
+            me.current = valueInPixel;
+            changeBackgroundColor();
           }
 
           // initialisation du slider
           init();
 
           return {
-            moveTo: me.moveTo
+            moveTo: me.moveTo,
+            getMax: function() {
+              return me.max;
+            },
+            getValue: function() {
+              return Math.round(me.current);
+            }
           }
         }
 
@@ -230,9 +270,17 @@
       // ajout de la fonctionnalité "random" sur le bouton "Aléatoire!"
       document.getElementById('myButton').addEventListener('click', function() {
         sliders.forEach(function(slider) {
-          slider.moveTo(Math.random()*100);
+          slider.moveTo(Math.random()*slider.getMax());
         });
       });
+
+
+      function changeBackgroundColor() {
+        var R = sliders[0].getValue();
+        var G = sliders[1].getValue();
+        var B = sliders[2].getValue();
+        document.body.style.backgroundColor = 'rgba('+R+', '+G+', '+B+', 1)'; // rgba : IE9+
+      }
 
     </script>
   </body>
