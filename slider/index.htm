@@ -3,6 +3,7 @@
 
   <!-- TODO :
 
+    * Pouvoir modifier les couleurs par défaut (rouge et vert) avec deux attributs de <slider/>
     * #DOING Enregistrer/supprimer des couleurs en local !
       * Drag-n-Drop sur les sliders !! pour les intervertir
 
@@ -81,6 +82,7 @@
         sliders.forEach(function(slider) {
           slider.moveTo(Math.random()*slider.getMax());
         });
+        setTimeout(function() { document.getElementById('myButton').blur() }, 500); // pour que le bouton "Aléatoire!" perde le focus !! pour le CSS ":focus"
       });
 
       // @TODO : y déplacer ? c'est utilisé par les <slider> ...

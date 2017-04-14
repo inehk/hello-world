@@ -152,6 +152,31 @@ button:focus {outline:0;}
   outline: 0;
   font-size: 14pt;
   color: white;
+  transition: .9s;
+}
+#myButton:hover {
+  color: red;
+  transition: .9s;
+  box-shadow: 0 0 10px black;
+}
+/* #TODO !!
+#myButton:hover::after {
+  content: ' \00bb';
+  transition: 2s;
+}
+*/
+#myButton:focus {
+  animation: buzz 0.1s linear 10 alternate;
+  transition: all 0s;
+}
+
+@keyframes buzz {
+  0% {
+
+  }
+  100% {
+    margin-left: 3px;
+  }
 }
 
 #saveButton {
