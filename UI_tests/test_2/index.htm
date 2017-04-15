@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+
+      @import url('https://fonts.googleapis.com/css?family=Roboto');
+
+      body {
+        background-image: repeating-linear-gradient(45deg, #ECEFF1, #ECEFF1 25px, #CFD8DC 25px, #CFD8DC 50px); /* IE10+ */
+        background-repeat: no-repeat;
+        height: 100vh;
+      }
+
+      #container {
+        width: 20%;
+        margin: 0 auto;
+        user-select: none;
+        cursor: default;
+      }
+
+      .weather {
+        font-family: 'Roboto', sans-serif;
+        border-radius: 6px;
+        background-color: #FFF6D5;
+        height: 500px;
+        width: 100%;
+        box-shadow: 0 7px 32px #6D4C41;
+        transition: 2s;
+        transform: rotate3d(1, 1, 1, 8deg);
+        transform-origin: top; /* le centre en haut ?? */
+      }
+      .weather:hover {
+        transform: rotate3d(0, 0, 0, -8deg);
+        transition: 0.8s;
+      }
+
+      /* en haut */
+      .header {
+        height: 10%;
+      }
+      .header span {
+        display: inline-block;
+        height: 100%;
+        /*outline: 1px solid blue;*/
+      }
+      .header span:nth-child(2n+1) {
+        font-weight: 800;
+        padding-top: 15px;
+        height: calc(100% - 15px); /* sinon la height = padding-top + 100px */
+        cursor: pointer;
+      }
+
+      .header span:nth-child(2n+1):hover {
+        background-color: #F57C00;
+      }
+      .header span:nth-child(1):hover {
+        border-top-left-radius: 6px;
+      }
+      .header span:nth-child(3):hover {
+        border-top-right-radius: 6px;
+      }
+      .header .back {
+        width: 15%;
+        float: left;
+        text-align: center;
+      }
+      .header .city {
+        width: calc(100% - 2 * 15%);
+        margin: auto;
+        text-align: center;
+      }
+      .header .add {
+        width: 15%;
+        float: right;
+        text-align: center;
+      }
+
+      /* graphique ... */
+      .chart {
+        height: 15%;
+        background-color: #FFC107;
+      }
+      .chart svg {
+        margin-left: calc((100% - 300px)/2);
+        width: 300px;
+        height: 100%;
+      }
+
+      /* L M M J V S D */
+      .horizontalData {
+        height: 10%;
+      }
+      .horizontalData span {
+        float: left;
+        width: calc(100% / 7);
+        text-align: center;
+        text-shadow: 0 0 5px grey;
+        border-top: 1px solid grey;
+        border-bottom: 1px solid grey;
+        height: 100%;
+      }
+
+      /* LUNDI, ...etc */
+      .verticalData {
+        height: 65%;
+        background-color: yellow;
+      }
+
+      .verticalData div {
+        height: calc(100% / 7);
+        border-top: 1px solid lightgrey;
+        text-align: center;
+      }
+      .verticalData div:hover {
+        text-decoration: underline;
+      }
+
+      #underConstruction {
+        display: block; /* indispensable ?! */
+        transform: rotate(45deg);
+        transform-origin: 5px 5px;
+        font-family: sans-serif;
+        color: orange;
+        text-shadow: 0 0 9px red;
+        font-size: 15pt;
+        background-color: grey;
+        opacity: 0.6;
+        width: 400px;
+        text-align: center;
+        word-spacing: 10px;
+        letter-spacing: 5px;
+        cursor: pointer;
+        user-select: none;
+      }
+      #underConstruction:hover {
+        animation: buzz 0.1s linear 20 alternate;
+      }
+      @keyframes buzz {
+        0% {
+
+        }
+        100% {
+          position: relative;
+          left: 5px;
+          top: 5px;
+          /*padding-right: -5px;*/
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <span id="underConstruction">En cours de construction</span>
+
+    <div id="container">
+      <section id="weatherMain" class="weather">
+
+        <section class="header">
+          <span class="back">⇐</span>
+          <span class="city">Lyon<br/>17:00 CEST</span>
+          <span class="add">+</span>
+        </section>
+
+        <section class="chart">
+          <svg>
+            <path d="M150 0 L75 200 L225 200 Z" />
+          </svg>
+        </section>
+
+        <section class="horizontalData">
+          <span>L</span>
+          <span>M</span>
+          <span>M</span>
+          <span>J</span>
+          <span>V</span>
+          <span>S</span>
+          <span>D</span>
+        </section>
+
+        <section class="verticalData">
+          <div>
+            LUNDI : 🌞
+          </div>
+          <div>
+            MARDI : ⛅
+          </div>
+          <div>
+            MERCREDI : ⛅
+          </div>
+          <div>
+            JEUDI : 🌦
+          </div>
+          <div>
+            VENDREDI : 🌦
+          </div>
+          <div>
+            SAMEDI : 🌪
+          </div>
+          <div>
+            DIMANCHE : 🌪
+          </div>
+        </section>
+
+      </section>
+    </div>
+
+    <script type="text/javascript">
+
+    </script>
+
+  </body>
+</html>
