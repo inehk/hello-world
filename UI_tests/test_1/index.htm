@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Menu</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background-color: #81D4FA;
+      }
+      nav {
+        background-color: #d32f2f;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom:0;
+        width: 15%;
+        transition: 0.5s;
+      }
+      .menuItem {
+        font-family: monospace;
+        padding: 10px;
+        width: 80%;
+        text-align: center;
+        font-size: 15pt;
+      }
+      .menuItem:hover {
+        transition: all 0.5s; /* all = ? */
+        font-size: calc(15pt + 5pt);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .tool1::before {
+        content: '\2660  ';
+      }
+      .tool2::before {
+        content: '\272A  ';
+      }
+      .collapse {
+        transition: 0.5s;
+        width: 10%;
+      }
+      #mainDiv {
+        margin-left: 15%;
+        width: calc(100% - 15%);
+        height: 100%;
+        transition: 0.5s;
+        min-height: 100vh; /* 100% du viewport, nouveauté IE9+ */
+      }
+      #mainDiv:hover {
+        transition: 0.5s;
+        /*margin-left: 10%;*/
+      }
+      html {
+        height: 100%;
+      }
+      article {
+        width: 80%;
+        margin: auto;
+        margin-top: 25px;
+      }
+    </style>
+  </head>
+  <body>
+
+
+
+    <section id="mainContent">
+
+      <!-- menu de gauche -->
+      <nav>
+        <div class="menuItem">
+          <span class="tool1">Tool 1</span>
+        </div>
+        <div class="menuItem">
+          <span class="tool2">Tool 2</span>
+        </div>
+      </nav>
+
+      <!-- Panneau de droite -->
+      <section id="mainDiv">
+        <article>
+          TEST !
+        </article>
+      </section>
+
+    </section>
+
+
+
+    <script type="text/javascript">
+      document.body.addEventListener('mousemove', function(e) {
+        var nav = document.getElementsByTagName('nav')[0];
+        if(e.clientX > 300) {
+          if(!nav.classList.contains('collapse')) {
+            nav.classList.add('collapse');
+          }
+        }else{
+          document.getElementsByTagName('nav')[0].classList.remove('collapse');
+        }
+      });
+    </script>
+  </body>
+</html>
