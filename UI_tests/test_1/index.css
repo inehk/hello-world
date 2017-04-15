@@ -1,0 +1,128 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: #81D4FA;
+}
+nav {
+  background-color: #d32f2f;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom:0;
+  width: 15%;
+  transition: 0.5s;
+  user-select: none; /* Chrome ... */
+}
+
+/* menu diminué */
+nav.collapse {
+  transition: 0.5s;
+  width: 6%;
+}
+
+.menuItem {
+  font-family: monospace;
+  padding: 5px;
+  width: 80%;
+  height: 15px;
+  margin: 5px 0; /* top/bottom left/right */
+  text-align: center;
+  font-size: 15pt;
+  text-shadow: 0 0 5px orange;
+}
+.menuItem:hover {
+  transition: all 0.5s; /* all = ? */
+  font-size: calc(15pt + 5pt);
+  text-decoration: underline;
+  cursor: pointer;
+}
+nav.collapse > .menuItem > span > span {
+  display: none;
+  transition: 0.25s;
+}
+
+.menuItem > span {
+  visibility: visible; /* pour bypasser le "hidden" ci-dessus */
+}
+
+#tool1::before {
+  content: '\2660  '; /* BLACK SPADE SUIT */
+}
+#tool2::before {
+  content: '\272A  '; /* CIRCLED WHITE STAR */
+}
+#tool3::before {
+  content: '\273F  '; /* BLACK FLORETTE */
+}
+#tool4::before {
+  content: '\262F  '; /* YIN YANG */
+}
+#tool5::before {
+  content: '\2744  '; /* SNOWFLAKE */
+}
+#tool6::before {
+  content: '\2708  '; /* AIRPLANE */
+}
+#tool7::before {
+  content: '\2714  '; /* HEAVY CHECK MARK */
+}
+#tool8::before {
+  content: '\1F382  '; /* BIRTHDAY CAKE */
+}
+
+#mainDiv {
+  margin-left: 15%;
+  width: calc(100% - 15%);
+  height: 100%;
+  transition: 0.5s;
+  min-height: 100vh; /* 100% du viewport, nouveauté IE9+ */
+}
+#mainDiv:hover {
+  transition: 0.5s;
+  /*margin-left: 10%;*/
+}
+html {
+  height: 100%;
+}
+article {
+  width: 80%;
+  margin: auto;
+  margin-top: 25px;
+}
+
+#drop {
+  min-height: 150px;
+  width: 250px;
+  border: 1px solid blue;
+  margin: 10px;
+  padding: 10px;
+}
+
+nav.collapse footer {
+  transform: rotate(0deg);
+  transition: 0.5s;
+}
+
+nav footer {
+  position: absolute;
+  bottom: 0;
+  transition: 0.5s;
+  margin: calc(50% - 48px / 2);
+  width: 100%;
+  height: 48px;
+  transform-origin: 24px 24px;
+  transform: rotate(-90deg);
+  background-repeat: no-repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABGUlEQVRoQ+2YSwrCQBBEnxvdiR5QPYCgIgheQUVEca839LN0JVkIEkw0PR0mI5V9V0+/mslU0iLxp5X4+tEAsR2UA3IgkIC2UCDA4PK8Ax1gDQyBXrC6r8AdOAML4PGSzg+wBya+fd3VDsC0aIBLA8nnCVyB/t8OsANm7qb7CmZrnBc50AZWwOjdJt/+ZrVs65yAZdkhNqvHKtRFFot80RmIvZ7K/bWFKiNzLviUhbbAAOg69wqV+ykLHYFxaKea60uz0K2B5CtloeQHSCFOf81Cm4Z+0CgL1fxyscnrJrZx86uSA34sbUrKQjZuQVXKQkH4HIpLf2wpCzkQLpJQFqoRrl1aN7GdnU+lHPDhaFeRA3Z2PpXJO/AEDAwwMek3d7wAAAAASUVORK5CYII=);
+}
+
+#tooltip {
+  position: fixed;
+  background-color: grey;
+  color: white;
+  display: none;
+  z-index: 100;
+  border: 1px solid red;
+}
