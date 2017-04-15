@@ -14,3 +14,4 @@ Divers tests : Java, Web (HTML/JS/CSS) :+1:
 
 ## **WIP** - Tests d'interface web
 [Menu](https://inehk.github.io/hello-world/UI_tests/test_1/)
+[Météo](https://inehk.github.io/hello-world/UI_tests/test_2/)
