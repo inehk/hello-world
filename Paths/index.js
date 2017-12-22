@@ -161,9 +161,9 @@ function createLine(subject) {
     var id = "from_"+subject.id+"_to_"+subjects[dep].id;
     var line = document.getElementById(id);
     if(line) {
-      line.setAttribute("x2", subject.x+(subject.name.length*7.5+20)/2);
+      line.setAttribute("x2", parseInt(subject.x+(subject.name.length*7.5+20)/2));
       line.setAttribute("y2", subject.y+10);
-      line.setAttribute("x1", subjects[dep].x + (subjects[dep].name.length*7.5+20)/2);
+      line.setAttribute("x1", parseInt(subjects[dep].x + (subjects[dep].name.length*7.5+20)/2));
       line.setAttribute("y1", subjects[dep].y + 10);
     }else{
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
