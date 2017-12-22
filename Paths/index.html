@@ -11,27 +11,41 @@
       svg .bloc {
         cursor: move;
       }
+      svg .bloc rect {
+        border-radius: 10px;
+      }
       svg text {
-        user-select: none;
+          cursor: default;
+          -webkit-user-select: none;
+             -moz-user-select: none;
+              -ms-user-select: none;
+                  user-select: none;
+      }
+      svg text::selection {
+          background: none;
       }
       text:hover {
         cursor: pointer;
       }
       #main {
         background-color: lightgrey;
-        width: 100%;
+        width: 80%;
         height: 800px;
       }
     </style>
   </head>
   <body>
-    <svg id="main">
+    <svg id="main" draggable="false">
       <defs>
-        <marker id='head' orient="auto" viewBox="0 0 10 10" markerWidth='25' markerHeight='25' refX='30' refY='2'>
+        <marker id='head' orient="auto" viewBox="0 0 10 10" markerWidth='25' markerHeight='25' refX='-30' refY='2'>
             <path d='M0,0 V4 L2,2 Z' fill='red' />
         </marker>
       </defs>
     </svg>
+
+    <div id="controls">
+      <div id="totalDisplacement"></div>
+    </div>
 
     <script type="text/javascript" src="index.js"></script>
 
