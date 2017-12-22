@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PATH</title>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      svg .bloc {
+        cursor: move;
+      }
+      svg text {
+        user-select: none;
+      }
+      text:hover {
+        cursor: pointer;
+      }
+      #main {
+        background-color: lightgrey;
+        width: 100%;
+        height: 800px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg id="main">
+      <defs>
+        <marker id='head' orient="auto" viewBox="0 0 10 10" markerWidth='25' markerHeight='25' refX='30' refY='2'>
+            <path d='M0,0 V4 L2,2 Z' fill='red' />
+        </marker>
+      </defs>
+    </svg>
+
+    <script type="text/javascript" src="index.js"></script>
+
+  </body>
+</html>
