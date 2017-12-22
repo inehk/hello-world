@@ -64,7 +64,7 @@ var randInt = function(min, max) {
 }
 
 var nbTotal = 10;
-for(var i = subjects_.length; i <= nbTotal; i++) {
+for(var i = subjects_.length+1; i <= nbTotal; i++) {
   subjects_.push({
     id: i,
     name: 'test ' + i,
