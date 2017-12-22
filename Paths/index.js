@@ -59,6 +59,21 @@ var subjects_ = [{
   dependencies: [2, 3]
 }];
 
+var randInt = function(min, max) {
+  return parseInt(Math.random()*max+min);
+}
+
+var nbTotal = 10;
+for(var i = subjects_.length; i <= nbTotal; i++) {
+  subjects_.push({
+    id: i,
+    name: 'test ' + i,
+    dependencies: [randInt(1, nbTotal), randInt(1, nbTotal)]
+  })
+}
+
+
+
 var subjects = {};
 subjects_.map(function(s) {
   var pos = getRandomPosition();
@@ -85,9 +100,10 @@ function createBox(subject) {
     boxGroup.setAttribute("transform", "translate("+subject.x+", "+subject.y+") rotate(0)");
     boxGroup.setAttribute("subjectId", subject.id);
     boxGroup.setAttribute("id", "subject_"+subject.id);
+    boxGroup.setAttribute("draggable", "false");
 
 
-      var boxWidth = (subject.name.length*7.5+30);
+      var boxWidth = (subject.name.length*7.5+20);
       //var pos = getRandomPosition();
       //subject.x = pos.x;
       //subject.y = pos.y;
@@ -96,18 +112,21 @@ function createBox(subject) {
 
       // Boite
       var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      rect.setAttribute("id", "box");
+      rect.setAttribute("id", "rect_"+subject.id);
       rect.setAttribute("fill", "beige");
+      rect.setAttribute("rx", 5);
+      rect.setAttribute("ry", 5);
       rect.setAttribute("stroke", "black");
       rect.setAttribute("width", boxWidth+"px");
       rect.setAttribute("height", "50px");
       rect.setAttribute("pointer-events", "all");
+      rect.setAttribute("draggable", "false");
       boxGroup.appendChild(rect);
       subject.rect = rect;
 
       // Text name
       var textName = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      textName.innerHTML = subject.id+". "+subject.name;
+      textName.innerHTML = subject.name;
       textName.setAttribute("x", "9px");
       textName.setAttribute("y", "19px");
       textName.setAttribute("fill", "black");
@@ -115,6 +134,7 @@ function createBox(subject) {
       textName.setAttribute("font-size", "10pt");
       textName.setAttribute("pointer-events", "none");
       textName.setAttribute("family", "sans serif");
+      textName.setAttribute("draggable", "false");
       boxGroup.appendChild(textName);
 
       subject.textName = textName;
@@ -132,48 +152,6 @@ function createBox(subject) {
       currentX = e.clientX;
       currentY = e.clientY;
     });
-    svg.addEventListener('mousemove', function(e) {
-      if(currentSelected) {
-        var transform = currentSelected.getAttribute("transform");
-        var myRegex = /translate\(([0-9\.]*), ([0-9\.]*)\)/g;
-        var values = myRegex.exec(transform);
-        if(values && values.length > 1) {
-          var dx = parseFloat(values[1]) + e.clientX - currentX;
-          var dy = parseFloat(values[2]) + e.clientY - currentY;
-          currentX = e.clientX;
-          currentY = e.clientY;
-          if(!isNaN(dx) && !isNaN(dy) && dx > 0 && dy > 0) {
-            currentSelected.setAttribute("transform", "translate("+parseInt(dx)+", "+parseInt(dy)+") rotate(0)");
-
-            // On efface toutes les lignes
-            /*
-            var all = svg.querySelectorAll("line");
-            var forEach = Array.prototype.forEach;
-            forEach.call(all, function(line){
-              svg.removeChild(line);
-            });
-            */
-
-            Object.values(subjects).forEach(function(s){
-              if(s.id == currentSelected.getAttribute("subjectId")) {
-                s.x = parseInt(dx);
-                s.y = parseInt(dy);
-              }
-              createLine(s);
-            });
-
-
-            Object.values(subjects).forEach(function(s, idx){
-              createBox(s);
-            });
-          }
-        }
-      }
-    });
-    document.body.addEventListener('mouseup', function(e) {
-      console.log("mouseUP!!", e.target);
-      currentSelected = null;
-    });
     boxGroup.setAttribute('class', 'bloc');
 
     svg.appendChild(boxGroup);
@@ -183,18 +161,22 @@ function createBox(subject) {
 
 function createLine(subject) {
   subject.dependencies.forEach(function(dep) {
+    if(subjects[dep].id==subject.id) {
+      console.log("loop!");
+      return false;
+    }
     var id = "from_"+subject.id+"_to_"+subjects[dep].id;
     var line = document.getElementById(id);
     if(line) {
-      line.setAttribute("x2", subject.x+(subject.name.length*7.5+30)/2);
+      line.setAttribute("x2", subject.x+(subject.name.length*7.5+20)/2);
       line.setAttribute("y2", subject.y+10);
-      line.setAttribute("x1", subjects[dep].x + (subjects[dep].name.length*7.5+30)/2);
+      line.setAttribute("x1", subjects[dep].x + (subjects[dep].name.length*7.5+20)/2);
       line.setAttribute("y1", subjects[dep].y + 10);
     }else{
       var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute("x2", parseInt(subject.x+(subject.name.length*7.5+30)/2));
+      line.setAttribute("x2", parseInt(subject.x+(subject.name.length*7.5+20)/2));
       line.setAttribute("y2", subject.y+10);
-      line.setAttribute("x1", parseInt(subjects[dep].x + (subjects[dep].name.length*7.5+30)/2));
+      line.setAttribute("x1", parseInt(subjects[dep].x + (subjects[dep].name.length*7.5+20)/2));
       line.setAttribute("y1", subjects[dep].y + 10);
       line.setAttribute("stroke", "black");
       line.setAttribute("stroke-width", 2);
@@ -228,7 +210,7 @@ function createLine(subject) {
 
  REPULSION_CONSTANT = 0.1; // Coulomb ... ?
  ATTRACTION_CONSTANT = 100;
- SPRING_LENGTH = 1000; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
+ SPRING_LENGTH = 10000; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
   //console.log("distance:", a.x, a.y, b.x, b.y);
@@ -359,8 +341,7 @@ ForceLayout = (function() {
 ForceLayout.setGraphObject(subjects);
 ForceLayout.doLayout();
 
-
-function displayLines() {
+function display() {
   /*var all = svg.querySelectorAll("line");
   var forEach = Array.prototype.forEach;
   forEach.call(all, function(line){
@@ -369,12 +350,44 @@ function displayLines() {
   Object.values(subjects).forEach(function(s){
     createLine(s);
   });
+
+  Object.values(subjects).forEach(function(s, idx){
+    createBox(s);
+  });
+
 }
 
-displayLines();
+display();
 
-Object.values(subjects).forEach(function(s, idx){
-  createBox(s);
+svg.addEventListener('mousemove', function(e) {
+  if(currentSelected) {
+    var transform = currentSelected.getAttribute("transform");
+    var myRegex = /translate\(([0-9\.]*), ([0-9\.]*)\)/g;
+    var values = myRegex.exec(transform);
+    if(values && values.length > 1) {
+      var dx = parseFloat(values[1]) + e.clientX - currentX;
+      var dy = parseFloat(values[2]) + e.clientY - currentY;
+      currentX = e.clientX;
+      currentY = e.clientY;
+      console.log(dx, dy);
+      if(!isNaN(dx) && !isNaN(dy) && dx > 0 && dy > 0) {
+        currentSelected.setAttribute("transform", "translate("+parseInt(dx)+", "+parseInt(dy)+") rotate(0)");
+
+        Object.values(subjects).forEach(function(s){
+          if(s.id == currentSelected.getAttribute("subjectId")) {
+            s.x = parseInt(dx);
+            s.y = parseInt(dy);
+          }
+        });
+
+        display();
+      }
+    }
+  }
+});
+document.body.addEventListener('mouseup', function(e) {
+  console.log("mouseUP!!", e.target);
+  currentSelected = null;
 });
 
 var arrangeBtn = document.createElement('button');
@@ -382,12 +395,6 @@ arrangeBtn.innerHTML = 'Arrange boxes';
 arrangeBtn.addEventListener('click', function() {
   ForceLayout.setGraphObject(subjects);
   ForceLayout.doLayout();
-
-  displayLines();
-
-  Object.values(subjects).forEach(function(s, idx){
-    createBox(s);
-  });
-
+  display();
 })
 document.getElementById("controls").appendChild(arrangeBtn);
