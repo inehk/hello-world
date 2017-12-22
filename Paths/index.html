@@ -29,22 +29,29 @@
       }
       #main {
         background-color: lightgrey;
-        width: 80%;
+        width: 90%;
         height: 800px;
+        margin: auto
+      }
+      #container {
+        background-color: black;
       }
     </style>
   </head>
   <body>
-    <svg id="main" draggable="false">
-      <defs>
-        <marker id='head' orient="auto" viewBox="0 0 10 10" markerWidth='25' markerHeight='25' refX='-30' refY='2'>
-            <path d='M0,0 V4 L2,2 Z' fill='red' />
-        </marker>
-      </defs>
-    </svg>
+    <span id="container">
+      <svg id="main" draggable="false">
+        <defs>
+          <marker id='head' orient="auto" viewBox="0 0 10 10" markerWidth='25' markerHeight='25' refX='-30' refY='2'>
+              <path d='M0,0 V4 L2,2 Z' fill='red' />
+          </marker>
+        </defs>
+      </svg>
+    </span>
 
     <div id="controls">
       <div id="totalDisplacement"></div>
+      <input type="number" id="maxSteps" value="500" step="100" />
       <button onclick="window.location.reload();">Reload</button>
     </div>
 

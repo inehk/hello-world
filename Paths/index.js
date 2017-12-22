@@ -3,26 +3,14 @@
 Force-Directed Layout :
 https://www.brad-smith.info/blog/archives/129
 
-
-
-
 TODO:
-
-Utiliser les poids pour les positionnement (si nouveau bloc, peu de poids pour ne pas bouger le reste !...)
-
-
-
-
-
-
+ - Utiliser les poids pour les positionnement (si nouveau bloc, peu de poids pour ne pas bouger le reste !...)
 
 */
 
 
-
-
-
 var svg = document.getElementById('main');
+
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -76,7 +64,7 @@ for(var i = subjects_.length+1; i <= nbTotal; i++) {
 
 var subjects = {};
 subjects_.map(function(s) {
-  var pos = getRandomPosition();
+  var pos = getRandomCenteredPosition();
   s.x = pos.x;
   s.y = pos.y;
   subjects[s.id] = s;
@@ -85,6 +73,11 @@ console.log(subjects);
 
 function getRandomPosition() {
   return {x: parseInt(Math.random()*width*0.75)+50, y: parseInt(Math.random()*height*0.75)+25};
+}
+
+function getRandomCenteredPosition() {
+  return {x: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svg.parentNode.offsetWidth*0.5)+svg.parentNode.offsetWidth/2,
+          y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svg.parentNode.offsetTop*0.2)+svg.parentNode.offsetTop/2};
 }
 
 var currentSelected = null, currentX, currentY; // l'objet que l'on est en train de déplacer
@@ -208,17 +201,19 @@ function createLine(subject) {
  *
  */
 
- REPULSION_CONSTANT = 0.1; // Coulomb ... ?
- ATTRACTION_CONSTANT = 100;
- SPRING_LENGTH = 10000; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
+ REPULSION_CONSTANT = 0.1; // Loi de Coulomb ... ?
+ ATTRACTION_CONSTANT = 0.0001; // Hooke's Law ...
+ SPRING_LENGTH = 500; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
   //console.log("distance:", a.x, a.y, b.x, b.y);
-  return parseInt(Math.sqrt(
-    Math.pow(a.x - b.x, 2)
-    +
-    Math.pow(a.y - b.y, 2)
-  ));
+  return parseInt(
+    Math.sqrt(
+      Math.pow(a.x - b.x, 2)
+      +
+      Math.pow(a.y - b.y, 2)
+    )
+  );
 }
 
 ForceLayout = (function() {
@@ -229,7 +224,8 @@ ForceLayout = (function() {
 
   function doLayout() {
     var i = 0;
-    while(i < 1000) {
+    var maxSteps = parseInt(document.getElementById('maxSteps').value) || 1000;
+    while(i <= maxSteps) {
       var totalDisplacement = 0;
 
       // Pour chaque noeud : on va calculer la force à y appliquer
@@ -298,16 +294,16 @@ ForceLayout = (function() {
 
       //console.log("totalDisplacement:", totalDisplacement);
 
-      document.getElementById('totalDisplacement').innerHTML = totalDisplacement + "--" + i;
+      document.getElementById('totalDisplacement').innerHTML = "totalDisplacement=" + totalDisplacement + " - (" + i + " steps)";
 
       // fin : plus rien ne bouge
-      if(totalDisplacement < 100) {
-        break;
+      console.log(totalDisplacement);
+      if(totalDisplacement < 1E-4) {
+        //break;
       }
 
       i++;
     }
-    console.log("i=", i);
   };
 
   function getBearingAngle(node1, node2) {
