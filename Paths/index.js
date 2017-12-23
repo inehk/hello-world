@@ -144,7 +144,7 @@ function createBox(subject) {
       boxGroup.appendChild(textName);
       subject.textName = textName;
 
-      // Text description
+      // Text description @TODO
 
       // Rect pourcentage progression
       var rectProgress = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -162,12 +162,13 @@ function createBox(subject) {
       boxGroup.appendChild(rectProgress);
       subject.rectProgress = rectProgress;
 
-      var rectProgressBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       switch(true) {
         case (subject.progress < 25): progressColor = 'red'; break;
         case (subject.progress >= 25 && subject.progress < 75): progressColor = 'orange'; break;
         default: progressColor = 'green';
       }
+
+      var rectProgressBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       rectProgressBar.setAttribute("id", "progress_bar_"+subject.id);
       rectProgressBar.setAttribute("fill", progressColor);
       rectProgressBar.setAttribute("rx", 0);
@@ -181,7 +182,6 @@ function createBox(subject) {
       rectProgressBar.setAttribute("draggable", "false");
       boxGroup.appendChild(rectProgressBar);
       subject.rectProgressBar = rectProgressBar;
-
 
     // EVENTS sur les box
     boxGroup.addEventListener('mouseover', function(e) { e.target.parentNode.querySelector("rect").setAttribute("stroke-width", 5); });
@@ -290,95 +290,98 @@ ForceLayout = (function() {
     });
 
     while(i <= maxSteps) { // borne supérieur : si vraiment ça ne converge pas
-      var totalDisplacement = 0;
+        var totalDisplacement = 0;
 
-      // Pour chaque noeud : on va calculer la force à y appliquer lors de ce "step"
-      Object.values(me.object).forEach(function(node) {
+        // Pour chaque noeud : on va calculer la force à y appliquer lors de ce "step"
+        Object.values(me.object).forEach(function(node) {
 
-        // netForce = C'est la force totale exercée sur ce noeud
-        var netForceX = 0, netForceY = 0,
-            vec;
+            // netForce = C'est la force totale exercée sur ce noeud
+            var netForceX = 0, netForceY = 0,
+                vec;
 
-        // On conserve la position actuelle pour calculer s'il y a encore du déplacement de "noeuds"
-        node.oldX = node.x;
-        node.oldY = node.y;
+            // On conserve la position actuelle pour calculer s'il y a encore du déplacement de "noeuds"
+            node.oldX = node.x;
+            node.oldY = node.y;
 
-          // Electron : Loi de coulomb (sur tous les noeuds) => répulsion
-        Object.values(me.object).forEach(function(node2) {
-          if(node !== node2) { // sauf "lui-même"
-            vec = calcRepulsionForce(node, node2); // retourne une : force + angle
-            netForceX += vec[0]*Math.cos(vec[1]); // Magnitude x cos(angle) = composante horizontale sur X
-            netForceY += vec[0]*Math.sin(vec[1]); // Magnitude x cos(angle) = composante verticale sur Y
-          }
+              // Electron : Loi de coulomb (sur tous les noeuds) => répulsion
+            Object.values(me.object).forEach(function(node2) {
+                if(node !== node2) { // sauf "lui-même"
+                    vec = calcRepulsionForce(node, node2); // retourne une : force + angle
+                    netForceX += vec[0]*Math.cos(vec[1]); // Magnitude x cos(angle) = composante horizontale sur X
+                    netForceY += vec[0]*Math.sin(vec[1]); // Magnitude x cos(angle) = composante verticale sur Y
+                }
+            });
+
+            // Ressorts : Loi de Hooke (uniquement avec ceux connecté !)
+            for(var i in node.dependencies) {
+                var linkedNode = me.object[node.dependencies[i]];
+                vec = calcAttractionForce(node, linkedNode);
+                //console.log('force attraction :' + vec[0]);
+                netForceX += vec[0]*Math.cos(vec[1]); // sur X
+                netForceY += vec[0]*Math.sin(vec[1]); // sur Y
+            };
+
+            // on y conserve sur l'objet "node" (qui est le "subject" en fait)
+            if(node.velocityX == undefined) {
+                node.velocityX = netForceX;
+                node.velocityY = netForceY;
+            }else{
+                node.velocityX += netForceX;
+                node.velocityY += netForceY;
+            }
+
         });
 
-        // Ressorts : Loi de Hooke (uniquement avec ceux connecté !)
-        for(var i in node.dependencies) {
-          var linkedNode = me.object[node.dependencies[i]];
-          vec = calcAttractionForce(node, linkedNode);
-          //console.log('force attraction :' + vec[0]);
-          netForceX += vec[0]*Math.cos(vec[1]); // sur X
-          netForceY += vec[0]*Math.sin(vec[1]); // sur Y
-        };
 
-        // on y conserve sur l'objet "node" (qui est le "subject" en fait)
-        if(node.velocityX == undefined) {
-          node.velocityX = netForceX;
-          node.velocityY = netForceY;
-        }else{
-          node.velocityX += netForceX;
-          node.velocityY += netForceY;
+        // Bouger chaque node avec la force calculé précedemment
+        Object.values(me.object).forEach(function(node) {
+
+            // calcul du déplacement vers la nouvelle position
+            node.x += node.velocityX*1/* v*dt */;
+            node.y += node.velocityY*1/* v*dt */;
+
+            // Points limités aux cadre du svg
+            if(node.x < 0) node.x = 0;
+            if(node.y < 0) node.y = 0;
+            if(node.x > svgWidth - 60) node.x = svgWidth - 60;
+            if(node.y > svgHeight - 40) node.y = svgHeight - 40;
+
+            //console.log("node.velocityX:", node.velocityX, "node.velocityY:", node.velocityY);
+
+            // On remet à zéro la force, pour ce step. (sera recalculé au suivant)
+            node.velocityX = 0;
+            node.velocityY = 0;
+
+            // On ajoute ça à totalDisplacement
+              //console.log("distance beetween : ", oldX, oldY, node.x, node.y);
+            addedDisplacement = distance({x: node.oldX, y: node.oldY}, node);
+
+            // DEBUG
+            node.addedDisplacement += parseInt(addedDisplacement);
+
+              //console.log("addedDisplacement : ", addedDisplacement);
+            totalDisplacement += parseInt(addedDisplacement);
+        });
+
+        //console.log("totalDisplacement:", totalDisplacement);
+
+        document.getElementById('totalDisplacement').innerHTML = " * totalDisplacement : " + totalDisplacement + " pixels.<br/> * " + i + " steps éffectués";
+
+        console.log(totalDisplacement);
+
+        // fin : si convergence : plus rien ne bouge
+        if(totalDisplacement < 1) {
+            break;
         }
 
-      });
-
-
-      // Bouger chaque node avec la force calculé précedemment
-      Object.values(me.object).forEach(function(node) {
-
-        // calcul du déplacement vers la nouvelle position
-        node.x += node.velocityX*0.1/* v*dt */;
-        node.y += node.velocityY*0.1/* v*dt */;
-
-        // Points limités aux cadre du svg
-        if(node.x < 0) node.x = 0;
-        if(node.y < 0) node.y = 0;
-        if(node.x > svgWidth) node.x = svgWidth - 20;
-        if(node.y > svgHeight) node.y = svgHeight - 10;
-
-        //console.log("node.velocityX:", node.velocityX, "node.velocityY:", node.velocityY);
-
-        // On remet à zéro la force, pour ce step. (sera recalculé au suivant)
-        node.velocityX = 0;
-        node.velocityY = 0;
-
-        // On ajoute ça à totalDisplacement
-          //console.log("distance beetween : ", oldX, oldY, node.x, node.y);
-        addedDisplacement = distance({x: node.oldX, y: node.oldY}, node);
-
-        // DEBUG
-        node.addedDisplacement += addedDisplacement;
-
-          //console.log("addedDisplacement : ", addedDisplacement);
-        totalDisplacement += addedDisplacement;
-      });
-
-      //console.log("totalDisplacement:", totalDisplacement);
-
-      document.getElementById('totalDisplacement').innerHTML = " * totalDisplacement : " + totalDisplacement + " pixels.<br/> * " + i + " steps éffectués";
-
-      console.log(totalDisplacement);
-
-      // fin : si convergence : plus rien ne bouge
-      if(totalDisplacement < 1) {
-        break;
-      }
-
-      i++; // step suivant
+        i++; // step suivant
     }
+
+    // DEBUG
     Object.values(me.object).forEach(function(node) {
-      addedDisplacementOnNode(node, node.addedDisplacement);
+        addedDisplacementOnNode(node, node.addedDisplacement);
     });
+
   };
 
   function addedDisplacementOnNode(node, addedDisplacement) {
