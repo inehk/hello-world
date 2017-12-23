@@ -85,7 +85,7 @@ function getRandomPosition() {
 }
 function getRandomCenteredPosition() {
   return {x: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgWidth*0.5)+svgWidth/2,
-          y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgHeight*0.2)+svgHeight/2};
+          y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgHeight*0.5)+svgHeight/2};
 }
 
 var currentSelected = null, // l'objet que l'on est en train de déplacer
@@ -256,8 +256,8 @@ function createLine(subject) {
 
 
 REPULSION_CONSTANT = 1000000; // Loi de Coulomb ... ?
-ATTRACTION_CONSTANT = 0.01; // Hooke's Law ...
-SPRING_LENGTH = 5; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
+ATTRACTION_CONSTANT = 0.1; // Hooke's Law ...
+SPRING_LENGTH = 100; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
   //console.log("distance:", a.x, a.y, b.x, b.y);
