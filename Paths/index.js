@@ -255,8 +255,8 @@ function createLine(subject) {
 */
 
 
-REPULSION_CONSTANT = 0.1; // Loi de Coulomb ... ?
-ATTRACTION_CONSTANT = 0.01; // Hooke's Law ...
+REPULSION_CONSTANT = 10000; // Loi de Coulomb ... ?
+ATTRACTION_CONSTANT = 0.1; // Hooke's Law ...
 SPRING_LENGTH = 500; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
