@@ -255,9 +255,9 @@ function createLine(subject) {
 */
 
 
-REPULSION_CONSTANT = 10000; // Loi de Coulomb ... ?
-ATTRACTION_CONSTANT = 0.1; // Hooke's Law ...
-SPRING_LENGTH = 500; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
+REPULSION_CONSTANT = 1000000; // Loi de Coulomb ... ?
+ATTRACTION_CONSTANT = 0.01; // Hooke's Law ...
+SPRING_LENGTH = 5; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
   //console.log("distance:", a.x, a.y, b.x, b.y);
@@ -412,7 +412,7 @@ ForceLayout = (function() {
 
   function calcRepulsionForce(node1, node2) {
     var proximity = Math.max(distance(node1, node2), 1);
-    var force = -REPULSION_CONSTANT / Math.pow(proximity, 2);
+    var force = REPULSION_CONSTANT / Math.pow(proximity, 2);
     //console.log("force de repulsion entre "+node1.id+" et "+node2.id, force);
     var angle = getBearingAngle(node1, node2);
     //console.log("angle de repulsion entre "+node1.id+" et "+node2.id+" en degré", angle * 180 / Math.PI);
@@ -420,8 +420,8 @@ ForceLayout = (function() {
   };
 
   function calcAttractionForce(node1, node2) {
-    var proximity = Math.max(distance(node1, node2), 1);
-    var force = ATTRACTION_CONSTANT * Math.max(proximity - SPRING_LENGTH, 0);
+    var proximity = Math.max(distance(node1, node2), SPRING_LENGTH);
+    var force = -ATTRACTION_CONSTANT * Math.max(proximity - SPRING_LENGTH, 0);
     //console.log("forceAttr:", force);
     var angle = getBearingAngle(node1, node2);
     return [force, angle];
