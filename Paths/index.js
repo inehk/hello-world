@@ -13,6 +13,8 @@ var svg = document.getElementById('main');
 
 var width = window.innerWidth;
 var height = window.innerHeight;
+var svgWidth = svg.parentNode.offsetWidth;
+var svgHeight = svg.parentNode.offsetTop;
 
 svg.addEventListener('contextmenu', function(event) {
   event.preventDefault();
@@ -53,13 +55,20 @@ var randInt = function(min, max) {
 
 var nbTotal = 10;
 for(var i = subjects_.length+1; i <= nbTotal; i++) {
+  var dep1 = randInt(1, nbTotal), dep2 = randInt(1, nbTotal);
   subjects_.push({
     id: i,
     name: 'test ' + i,
-    dependencies: [randInt(1, nbTotal), randInt(1, nbTotal)]
-  })
+    dependencies: [dep1, dep2]
+  });
 }
 
+// "doublage" du lien ...
+for(var i = subjects_.length+1; i <= nbTotal; i++) {
+  subjects_[i].dependencies.forEach(function(dep) {
+    subjects_[dep].dependencies.push(i);
+  })
+}
 
 
 var subjects = {};
@@ -76,8 +85,8 @@ function getRandomPosition() {
 }
 
 function getRandomCenteredPosition() {
-  return {x: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svg.parentNode.offsetWidth*0.5)+svg.parentNode.offsetWidth/2,
-          y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svg.parentNode.offsetTop*0.2)+svg.parentNode.offsetTop/2};
+  return {x: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgWidth*0.5)+svgWidth/2,
+          y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgHeight*0.2)+svgHeight/2};
 }
 
 var currentSelected = null, currentX, currentY; // l'objet que l'on est en train de déplacer
@@ -97,6 +106,7 @@ function createBox(subject) {
 
 
       var boxWidth = (subject.name.length*7.5+20);
+
       //var pos = getRandomPosition();
       //subject.x = pos.x;
       //subject.y = pos.y;
@@ -201,9 +211,16 @@ function createLine(subject) {
  *
  */
 
+/* sans lien doublé
  REPULSION_CONSTANT = 0.1; // Loi de Coulomb ... ?
  ATTRACTION_CONSTANT = 0.0001; // Hooke's Law ...
  SPRING_LENGTH = 500; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
+*/
+
+
+REPULSION_CONSTANT = 0.1; // Loi de Coulomb ... ?
+ATTRACTION_CONSTANT = 0.01; // Hooke's Law ...
+SPRING_LENGTH = 500; // plus petit = ressort plus "compacte", mais pb si trop compacte ça explose ???!!...
 
 function distance(a, b) {
   //console.log("distance:", a.x, a.y, b.x, b.y);
@@ -218,47 +235,51 @@ function distance(a, b) {
 
 ForceLayout = (function() {
   var me = this;
+
+  //
   function setGraphObject(object) {
     me.object = object;
   };
 
+  //
   function doLayout() {
-    var i = 0;
-    var maxSteps = parseInt(document.getElementById('maxSteps').value) || 1000;
-    while(i <= maxSteps) {
+
+    var i = 0,
+        maxSteps = parseInt(document.getElementById('maxSteps').value) || 1000;
+
+    while(i <= maxSteps) { // borne supérieur : si vraiment ça ne converge pas
       var totalDisplacement = 0;
 
-      // Pour chaque noeud : on va calculer la force à y appliquer
+      // Pour chaque noeud : on va calculer la force à y appliquer lors de ce "step"
       Object.values(me.object).forEach(function(node) {
 
         // netForce = C'est la force totale exercée sur ce noeud
         var netForceX = 0, netForceY = 0,
             vec;
 
+        // On conserve la position actuelle pour calculer s'il y a encore du déplacement de "noeuds"
         node.oldX = node.x;
         node.oldY = node.y;
 
-          // Electron/Loi de coulomb (avec tous les *autres* noeuds) => répulsion
+          // Electron : Loi de coulomb (sur tous les noeuds) => répulsion
         Object.values(me.object).forEach(function(node2) {
-          if(node !== node2) {
-            vec = calcRepulsionForce(node, node2); // force, angle
-            netForceX += vec[0]*Math.cos(vec[1]); // Magn ... angle
-            netForceY += vec[0]*Math.sin(vec[1]);
+          if(node !== node2) { // sauf "lui-même"
+            vec = calcRepulsionForce(node, node2); // retourne une : force + angle
+            netForceX += vec[0]*Math.cos(vec[1]); // Magnitude x cos(angle) = composante horizontale sur X
+            netForceY += vec[0]*Math.sin(vec[1]); // Magnitude x cos(angle) = composante verticale sur Y
           }
         });
 
-        // Loi de Hooke : Ressorts (uniquement si connecté !)
+        // Ressorts : Loi de Hooke (uniquement avec ceux connecté !)
         for(var i in node.dependencies) {
           var linkedNode = me.object[node.dependencies[i]];
-          var springLength = distance(node, linkedNode);
-          vec = calcAttractionForce(node, linkedNode, SPRING_LENGTH);
+          vec = calcAttractionForce(node, linkedNode);
           //console.log('force attraction :' + vec[0]);
-          netForceX += vec[0]*Math.cos(vec[1]); // Magn ... angle
-          netForceY += vec[0]*Math.sin(vec[1]);
+          netForceX += vec[0]*Math.cos(vec[1]); // sur X
+          netForceY += vec[0]*Math.sin(vec[1]); // sur Y
         };
 
-
-
+        // on y conserve sur l'objet "node" (qui est le "subject" en fait)
         if(node.velocityX == undefined) {
           node.velocityX = netForceX;
           node.velocityY = netForceY;
@@ -267,10 +288,6 @@ ForceLayout = (function() {
           node.velocityY += netForceY;
         }
 
-        // d'y mettre ici ça fait quoi de mieux ???!!!
-        node.x += node.velocityX*1/* v*dt */;
-        node.y += node.velocityY*1/* v*dt */;
-
       });
 
 
@@ -278,50 +295,62 @@ ForceLayout = (function() {
       Object.values(me.object).forEach(function(node) {
         var oldX = node.x;
         var oldY = node.y;
+
         // calcul du déplacement vers la nouvelle position
+        node.x += node.velocityX*0.1/* v*dt */;
+        node.y += node.velocityY*0.1/* v*dt */;
+
+        // Points limités aux cadre du svg
+        if(node.x < 0) node.x = 0;
+        if(node.y < 0) node.y = 0;
+        if(node.x > svgWidth) node.x = svgWidth - 20;
+        if(node.y > svgHeight) node.y = svgHeight - 10;
+
         //console.log("node.velocityX:", node.velocityX, "node.velocityY:", node.velocityY);
 
+        // On remet à zéro la force, pour ce step. (sera recalculé au suivant)
         node.velocityX = 0;
         node.velocityY = 0;
 
-        // Ajouter ça à totalDisplacement
+        // On ajoute ça à totalDisplacement
           //console.log("distance beetween : ", oldX, oldY, node.x, node.y);
         addedDisplacement = distance({x: node.oldX, y: node.oldY}, node);
           //console.log("addedDisplacement : ", addedDisplacement);
         totalDisplacement += addedDisplacement;
-
       });
 
       //console.log("totalDisplacement:", totalDisplacement);
 
-      document.getElementById('totalDisplacement').innerHTML = "totalDisplacement=" + totalDisplacement + " - (" + i + " steps)";
+      document.getElementById('totalDisplacement').innerHTML = " * totalDisplacement : " + totalDisplacement + " pixels.<br/> * " + i + " steps éffectués";
 
-      // fin : plus rien ne bouge
       console.log(totalDisplacement);
-      if(totalDisplacement < 1E-4) {
-        //break;
+
+      // fin : si convergence : plus rien ne bouge
+      if(totalDisplacement < 1) {
+        break;
       }
 
-      i++;
+      i++; // step suivant
     }
   };
 
+  // Angle de la force
   function getBearingAngle(node1, node2) {
     return Math.atan2(node2.x - node1.x, node2.y - node1.y); // * 180 / Math.PI; // degrée
   }
 
   function calcRepulsionForce(node1, node2) {
     var proximity = Math.max(distance(node1, node2), 1);
-    var force = -REPULSION_CONSTANT / Math.pow(proximity, 2)
+    var force = -REPULSION_CONSTANT / Math.pow(proximity, 2);
     //console.log("force de repulsion entre "+node1.id+" et "+node2.id, force);
     var angle = getBearingAngle(node1, node2);
     //console.log("angle de repulsion entre "+node1.id+" et "+node2.id+" en degré", angle * 180 / Math.PI);
     return [force, angle];
   };
 
-  function calcAttractionForce(node1, node2, springLength) {
+  function calcAttractionForce(node1, node2) {
     var proximity = Math.max(distance(node1, node2), 1);
-    var force = ATTRACTION_CONSTANT * Math.max(proximity - springLength, 0);
+    var force = ATTRACTION_CONSTANT * Math.max(proximity - SPRING_LENGTH, 0);
     //console.log("forceAttr:", force);
     var angle = getBearingAngle(node1, node2);
     return [force, angle];
@@ -334,27 +363,31 @@ ForceLayout = (function() {
 
 })(window);
 
-ForceLayout.setGraphObject(subjects);
-ForceLayout.doLayout();
-
 function display() {
   /*var all = svg.querySelectorAll("line");
   var forEach = Array.prototype.forEach;
   forEach.call(all, function(line){
     svg.removeChild(line);
   });*/
+
+  // Lines
   Object.values(subjects).forEach(function(s){
     createLine(s);
   });
-
+  // Boxes
   Object.values(subjects).forEach(function(s, idx){
     createBox(s);
   });
+};
 
-}
-
+//
+// Premier affichage
+//
+ForceLayout.setGraphObject(subjects);
+ForceLayout.doLayout();
 display();
 
+// pseudo Drag-n-Drop
 svg.addEventListener('mousemove', function(e) {
   if(currentSelected) {
     var transform = currentSelected.getAttribute("transform");
@@ -385,9 +418,13 @@ document.body.addEventListener('mouseup', function(e) {
   console.log("mouseUP!!", e.target);
   currentSelected = null;
 });
+// ! Drag-n-Drop
 
+//
+// Boutons sur l'interface:
+//
 var arrangeBtn = document.createElement('button');
-arrangeBtn.innerHTML = 'Arrange boxes';
+arrangeBtn.innerHTML = 'Placement auto.';
 arrangeBtn.addEventListener('click', function() {
   ForceLayout.setGraphObject(subjects);
   ForceLayout.doLayout();
