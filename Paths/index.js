@@ -8,20 +8,17 @@ TODO:
 
 */
 
-
 var svg = document.getElementById('main');
-
 var width = window.innerWidth;
 var height = window.innerHeight;
 var svgWidth = svg.parentNode.offsetWidth;
 var svgHeight = svg.parentNode.offsetTop;
 
-svg.addEventListener('contextmenu', function(event) {
-  event.preventDefault();
-});
+// empêche le click droit sur l'image SVG
+svg.addEventListener('contextmenu', function(event) {  event.preventDefault(); });
 
 //
-// Example
+// Example de "subjects"
 //
 var subjects_ = [{
   id: 1,
@@ -34,13 +31,13 @@ var subjects_ = [{
   name: 'Random variable',
   desc: 'discrète, continue, ...',
   progress: 100,
-  dependencies: [/*1, 3*/]
+  dependencies: []
 },{
   id: 3,
   name: 'Probability Density function',
   desc: 'Représentation d\'une loi de probabilité',
   progress: 80,
-  dependencies: [/*2, 1*/]
+  dependencies: []
 },{
   id: 4,
   name: 'Pearson\'s Chi-Squared test',
@@ -54,12 +51,15 @@ var randInt = function(min, max) {
 }
 
 var nbTotal = 10;
+// Random...
 for(var i = subjects_.length+1; i <= nbTotal; i++) {
-  var dep1 = randInt(1, nbTotal), dep2 = randInt(1, nbTotal);
+  var dep1 = randInt(1, nbTotal),
+      dep2 = randInt(1, nbTotal);
   subjects_.push({
     id: i,
     name: 'test ' + i,
-    dependencies: [dep1, dep2]
+    dependencies: [dep1, dep2],
+    progress: randInt(0, 100)
   });
 }
 
@@ -78,32 +78,35 @@ subjects_.map(function(s) {
   s.y = pos.y;
   subjects[s.id] = s;
 });
-console.log(subjects);
 
+// génération de positions
 function getRandomPosition() {
   return {x: parseInt(Math.random()*width*0.75)+50, y: parseInt(Math.random()*height*0.75)+25};
 }
-
 function getRandomCenteredPosition() {
   return {x: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgWidth*0.5)+svgWidth/2,
           y: (Math.random()>0.5?-1:1)*parseInt(Math.random()*svgHeight*0.2)+svgHeight/2};
 }
 
-var currentSelected = null, currentX, currentY; // l'objet que l'on est en train de déplacer
+var currentSelected = null, // l'objet que l'on est en train de déplacer
+    currentX,
+    currentY;
 
 function createBox(subject) {
 
   var boxGroup = document.getElementById('subject_' + subject.id);
-  if(boxGroup) {
+  if(boxGroup) { // existe déjà
+
     boxGroup.setAttribute("transform", "translate("+subject.x+", "+subject.y+") rotate(0)");
-  }else{
+    //boxGroup.querySelector('text').innerHTML = subject.name + "(" + subject.addedDisplacement + ")";
+
+  }else{ // nouvelle
 
     boxGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     boxGroup.setAttribute("transform", "translate("+subject.x+", "+subject.y+") rotate(0)");
     boxGroup.setAttribute("subjectId", subject.id);
     boxGroup.setAttribute("id", "subject_"+subject.id);
-    boxGroup.setAttribute("draggable", "false");
-
+    boxGroup.setAttribute("draggable", "false"); // @TODO : pas utile ?
 
       var boxWidth = (subject.name.length*7.5+20);
 
@@ -139,12 +142,46 @@ function createBox(subject) {
       textName.setAttribute("family", "sans serif");
       textName.setAttribute("draggable", "false");
       boxGroup.appendChild(textName);
-
       subject.textName = textName;
 
       // Text description
 
       // Rect pourcentage progression
+      var rectProgress = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rectProgress.setAttribute("id", "progress_"+subject.id);
+      rectProgress.setAttribute("fill", "black");
+      rectProgress.setAttribute("rx", 0);
+      rectProgress.setAttribute("ry", 0);
+      rectProgress.setAttribute("y", 30);
+      rectProgress.setAttribute("x", 10);
+      rectProgress.setAttribute("stroke", "black");
+      rectProgress.setAttribute("width", (boxWidth - 20)+"px");
+      rectProgress.setAttribute("height", "10px");
+      rectProgress.setAttribute("pointer-events", "all");
+      rectProgress.setAttribute("draggable", "false");
+      boxGroup.appendChild(rectProgress);
+      subject.rectProgress = rectProgress;
+
+      var rectProgressBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      switch(true) {
+        case (subject.progress < 25): progressColor = 'red'; break;
+        case (subject.progress >= 25 && subject.progress < 75): progressColor = 'orange'; break;
+        default: progressColor = 'green';
+      }
+      rectProgressBar.setAttribute("id", "progress_bar_"+subject.id);
+      rectProgressBar.setAttribute("fill", progressColor);
+      rectProgressBar.setAttribute("rx", 0);
+      rectProgressBar.setAttribute("ry", 0);
+      rectProgressBar.setAttribute("y", 30);
+      rectProgressBar.setAttribute("x", 10);
+      rectProgressBar.setAttribute("stroke", "black");
+      rectProgressBar.setAttribute("width", parseInt((boxWidth - 20)*subject.progress/100)+"px");
+      rectProgressBar.setAttribute("height", "10px");
+      rectProgressBar.setAttribute("pointer-events", "all");
+      rectProgressBar.setAttribute("draggable", "false");
+      boxGroup.appendChild(rectProgressBar);
+      subject.rectProgressBar = rectProgressBar;
+
 
     // EVENTS sur les box
     boxGroup.addEventListener('mouseover', function(e) { e.target.parentNode.querySelector("rect").setAttribute("stroke-width", 5); });
@@ -247,6 +284,11 @@ ForceLayout = (function() {
     var i = 0,
         maxSteps = parseInt(document.getElementById('maxSteps').value) || 1000;
 
+    // DEBUG
+    Object.values(me.object).forEach(function(node) {
+      node.addedDisplacement = 0;
+    });
+
     while(i <= maxSteps) { // borne supérieur : si vraiment ça ne converge pas
       var totalDisplacement = 0;
 
@@ -293,8 +335,6 @@ ForceLayout = (function() {
 
       // Bouger chaque node avec la force calculé précedemment
       Object.values(me.object).forEach(function(node) {
-        var oldX = node.x;
-        var oldY = node.y;
 
         // calcul du déplacement vers la nouvelle position
         node.x += node.velocityX*0.1/* v*dt */;
@@ -315,6 +355,10 @@ ForceLayout = (function() {
         // On ajoute ça à totalDisplacement
           //console.log("distance beetween : ", oldX, oldY, node.x, node.y);
         addedDisplacement = distance({x: node.oldX, y: node.oldY}, node);
+
+        // DEBUG
+        node.addedDisplacement += addedDisplacement;
+
           //console.log("addedDisplacement : ", addedDisplacement);
         totalDisplacement += addedDisplacement;
       });
@@ -332,7 +376,31 @@ ForceLayout = (function() {
 
       i++; // step suivant
     }
+    Object.values(me.object).forEach(function(node) {
+      addedDisplacementOnNode(node, node.addedDisplacement);
+    });
   };
+
+  function addedDisplacementOnNode(node, addedDisplacement) {
+    var label = document.getElementById('label_' + node.id);
+    if(label) {
+      label.setAttribute("x", parseInt(node.x + (node.name.length*7.5+20)/2));
+      label.setAttribute("y", parseInt(node.y - 20));
+      label.innerHTML = addedDisplacement;
+    }else{
+      label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.setAttribute("x", parseInt(node.x + (node.name.length*7.5+20)/2));
+      label.setAttribute("y", parseInt(node.y - 20));
+      label.setAttribute("id", 'label_' + node.id);
+      label.setAttribute("fill", "blue");
+      label.setAttribute("stroke", "blue");
+      label.setAttribute("font-size", "10pt");
+      label.setAttribute("pointer-events", "none");
+      label.setAttribute("family", "sans serif");
+      label.innerHTML = addedDisplacement;
+      svg.appendChild(label);
+    }
+  }
 
   // Angle de la force
   function getBearingAngle(node1, node2) {
